@@ -1,0 +1,2 @@
+APP_URL=<https://story-apps-kappa.vercel.app/>
+MAP_SERVICE_API_KEY=<api_key>
