@@ -8,7 +8,7 @@ export default class AddPage {
         return `
       <section class="container">
         <div class="skip-link">
-          <a href="#content" class="skip-to-content">Skip to content</a>
+          <a href="#content" class="skip-to-content">Skip</a>
         </div>
         <h1 id="content" tabindex="0">Add New Story</h1>
         

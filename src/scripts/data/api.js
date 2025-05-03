@@ -40,7 +40,6 @@ const StoriesAPI = {
     const responseJson = await response.json();
 
     if (!responseJson.error) {
-      // simpan ke local storage
       localStorage.setItem("user", JSON.stringify(responseJson.loginResult));
     }
 
@@ -48,16 +47,18 @@ const StoriesAPI = {
   },
 
   async getStories(page = 1, size = 10, location = 0) {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login";
+      return;
+    }
 
     const response = await fetch(
       `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`,
       {
         headers: {
-          Authorization: `Bearer ${
-            user.token ||
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
-          }`,
+          Authorization: `Bearer ${user.token}`,
         },
       }
     );
@@ -74,14 +75,16 @@ const StoriesAPI = {
   },
 
   async getStoryDetail(id) {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login";
+      return;
+    }
 
     const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
       headers: {
-        Authorization: `Bearer ${
-          user.token ||
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
-        }`,
+        Authorization: `Bearer ${user.token}`,
       },
     });
 
@@ -89,7 +92,12 @@ const StoriesAPI = {
   },
 
   async addStory({ description, photo, lat, lon }) {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login"
+      return;
+    }
 
     const formData = new FormData();
     formData.append("description", description);
@@ -103,10 +111,7 @@ const StoriesAPI = {
     const response = await fetch(ENDPOINTS.STORIES, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${
-          user.token ||
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
-        }`,
+        Authorization: `Bearer ${user.token}`,
       },
       body: formData,
     });
@@ -133,12 +138,13 @@ const StoriesAPI = {
   },
 
   checkAuth() {
-    const user = JSON.parse(localStorage.getItem("user")) || {};
-    return !!user.token;
+    const user = JSON.parse(localStorage.getItem("user"));
+    return !!user?.token;
   },
 
   logout() {
     localStorage.removeItem("user");
+    window.location.href = "/login";  
   },
 };
 

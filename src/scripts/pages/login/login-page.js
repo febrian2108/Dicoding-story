@@ -7,7 +7,7 @@ export default class LoginPage {
     return `
   <section class="container login-page">
     <div class="skip-link">
-      <a href="#content" class="skip-to-content">Skip to content</a>
+      <a href="#content" class="skip-to-content">Skip</a>
     </div>
     <h1 id="content" tabindex="0">Login</h1>
     

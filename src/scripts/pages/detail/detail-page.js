@@ -9,7 +9,7 @@ export default class DetailPage {
         return `
       <section class="container">
         <div class="skip-link">
-          <a href="#content" class="skip-to-content">Skip to content</a>
+          <a href="#content" class="skip-to-content">Skip</a>
         </div>
         <div id="story-detail" class="story-detail">
           <div class="loading">Loading story...</div>

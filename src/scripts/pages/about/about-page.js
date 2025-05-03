@@ -3,7 +3,7 @@ export default class AboutPage {
     return `
       <section class="container">
         <div class="skip-link">
-          <a href="#content" class="skip-to-content">Skip to content</a>
+          <a href="#content" class="skip-to-content">Skip</a>
         </div>
         <h1 id="content" tabindex="0">About Story Apps</h1>
         
