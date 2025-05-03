@@ -54,7 +54,7 @@ const StoriesAPI = {
       // Jika pengguna tidak login, tampilkan alert dan arahkan
       if (window.location.pathname !== "/login") {
         alert("Kamu harus login jika ingin melihat data dari API");
-        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+        window.location.href = "/login#/login";  // Sesuaikan dengan pengaturan routing Anda
       }
       return;
     }
@@ -117,7 +117,7 @@ const StoriesAPI = {
       // Jika pengguna tidak login, tampilkan alert dan arahkan
       if (window.location.pathname !== "/login") {
         alert("Kamu harus login jika ingin melihat data dari API");
-        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+        window.location.href = "/login#/login";  // Sesuaikan dengan pengaturan routing Anda
       }
       return;
     }
@@ -153,7 +153,7 @@ const StoriesAPI = {
       // Jika pengguna tidak login, tampilkan alert dan arahkan
       if (window.location.pathname !== "/login") {
         alert("Kamu harus login jika ingin melihat data dari API");
-        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+        window.location.href = "/login#/login";  // Sesuaikan dengan pengaturan routing Anda
       }
       return;
     }
@@ -234,7 +234,7 @@ const StoriesAPI = {
   logout() {
     localStorage.removeItem("user");
     // Redirect to login page after logout
-    window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+    window.location.href = "/login#/login";  // Sesuaikan dengan pengaturan routing Anda
   },
 };
 
