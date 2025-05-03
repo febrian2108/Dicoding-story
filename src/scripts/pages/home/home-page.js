@@ -6,9 +6,6 @@ export default class HomePage {
   async render() {
     return `
       <section class="container">
-        <div class="skip-link">
-          <a href="#main-content" class="skip-to-content">Skip</a>
-        </div>
         <div id="stories-container" class="stories-container">
           <div class="loading">Loading stories...</div>
         </div>

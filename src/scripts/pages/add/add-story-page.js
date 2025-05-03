@@ -1,15 +1,12 @@
 import StoriesAPI from "../../data/api";
 import CameraUtils from "../../utils/camera";
 import MapUtils from "../../utils/map";
-import AddController from "./add-story-presenter";
+import AddPresenter from "./add-story-presenter";
 
 export default class AddPage {
     async render() {
         return `
       <section class="container">
-        <div class="skip-link">
-          <a href="#content" class="skip-to-content">Skip</a>
-        </div>
         <h1 id="content" tabindex="0">Add New Story</h1>
         
         <form id="add-story-form" class="add-story-form">

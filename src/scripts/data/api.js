@@ -40,6 +40,7 @@ const StoriesAPI = {
     const responseJson = await response.json();
 
     if (!responseJson.error) {
+      // Simpan ke local storage
       localStorage.setItem("user", JSON.stringify(responseJson.loginResult));
     }
 
@@ -50,7 +51,7 @@ const StoriesAPI = {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      window.location.href = "/login";
+      window.location.href = "/login";  
       return;
     }
 
@@ -78,7 +79,7 @@ const StoriesAPI = {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      window.location.href = "/login";
+      window.location.href = "/login";  
       return;
     }
 
@@ -95,7 +96,7 @@ const StoriesAPI = {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      window.location.href = "/login"
+      window.location.href = "/login";  
       return;
     }
 

@@ -1,6 +1,6 @@
 import StoriesAPI from "../../data/api";
 
-const AddController = {
+const AddPresenter = {
     async add({ description, photo, lat, lon }) {
         if (StoriesAPI.checkAuth()) {
             return StoriesAPI.addStory({ description, photo, lat, lon });
@@ -10,4 +10,4 @@ const AddController = {
     },
 };
 
-export default AddController;
+export default AddPresenter;
