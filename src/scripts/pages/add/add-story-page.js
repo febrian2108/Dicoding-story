@@ -1,7 +1,11 @@
 import StoriesAPI from "../../data/api";
 import CameraUtils from "../../utils/camera";
 import MapUtils from "../../utils/map";
+<<<<<<< HEAD
 import AddController from "./add-story-presenter";
+=======
+import AddPresenter from "./add-story-presenter";
+>>>>>>> origin/main
 
 export default class AddPage {
     async render() {

@@ -40,7 +40,11 @@ const StoriesAPI = {
     const responseJson = await response.json();
 
     if (!responseJson.error) {
+<<<<<<< HEAD
       // simpan ke local storage
+=======
+      // Simpan ke local storage
+>>>>>>> origin/main
       localStorage.setItem("user", JSON.stringify(responseJson.loginResult));
     }
 
@@ -48,16 +52,29 @@ const StoriesAPI = {
   },
 
   async getStories(page = 1, size = 10, location = 0) {
+<<<<<<< HEAD
     const user = JSON.parse(localStorage.getItem("user")) || {};
+=======
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login";  
+      return;
+    }
+>>>>>>> origin/main
 
     const response = await fetch(
       `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`,
       {
         headers: {
+<<<<<<< HEAD
           Authorization: `Bearer ${
             user.token ||
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
           }`,
+=======
+          Authorization: `Bearer ${user.token}`,
+>>>>>>> origin/main
         },
       }
     );
@@ -74,6 +91,7 @@ const StoriesAPI = {
   },
 
   async getStoryDetail(id) {
+<<<<<<< HEAD
     const user = JSON.parse(localStorage.getItem("user")) || {};
 
     const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
@@ -82,6 +100,18 @@ const StoriesAPI = {
           user.token ||
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
         }`,
+=======
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login";  
+      return;
+    }
+
+    const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+>>>>>>> origin/main
       },
     });
 
@@ -89,7 +119,16 @@ const StoriesAPI = {
   },
 
   async addStory({ description, photo, lat, lon }) {
+<<<<<<< HEAD
     const user = JSON.parse(localStorage.getItem("user")) || {};
+=======
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    if (!user || !user.token) {
+      window.location.href = "/login";  
+      return;
+    }
+>>>>>>> origin/main
 
     const formData = new FormData();
     formData.append("description", description);
@@ -103,10 +142,14 @@ const StoriesAPI = {
     const response = await fetch(ENDPOINTS.STORIES, {
       method: "POST",
       headers: {
+<<<<<<< HEAD
         Authorization: `Bearer ${
           user.token ||
           "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLW1wQXE3ZGRTcmdFVnFsWFoiLCJpYXQiOjE3NDU5NDAwMzV9.AO4faCUymXCQF3_6e3TsE537CbEPIAlfGRNWYcEjX9g"
         }`,
+=======
+        Authorization: `Bearer ${user.token}`,
+>>>>>>> origin/main
       },
       body: formData,
     });
@@ -133,13 +176,26 @@ const StoriesAPI = {
   },
 
   checkAuth() {
+<<<<<<< HEAD
     const user = JSON.parse(localStorage.getItem("user")) || {};
     return !!user.token;
+=======
+    const user = JSON.parse(localStorage.getItem("user"));
+    return !!user?.token;
+>>>>>>> origin/main
   },
 
   logout() {
     localStorage.removeItem("user");
+<<<<<<< HEAD
   },
 };
 
 export default StoriesAPI;
+=======
+    window.location.href = "/login";  
+  },
+};
+
+export default StoriesAPI;
+>>>>>>> origin/main

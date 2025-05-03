@@ -13,7 +13,11 @@
   },
   "dependencies": {
     "gh-pages": "^6.3.0",
+<<<<<<< HEAD
     "leaflet": "^1.9.4",
     "react-router-dom": "^7.5.3"
+=======
+    "leaflet": "^1.9.4"
+>>>>>>> origin/main
   }
 }
