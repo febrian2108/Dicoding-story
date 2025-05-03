@@ -6,12 +6,9 @@ export default class LoginPage {
   async render() {
     return `
   <section class="container login-page">
-<<<<<<< HEAD
     <div class="skip-link">
       <a href="#content" class="skip-to-content">Skip to content</a>
     </div>
-=======
->>>>>>> origin/main
     <h1 id="content" tabindex="0">Login</h1>
     
     <form id="login-form" class="auth-form">

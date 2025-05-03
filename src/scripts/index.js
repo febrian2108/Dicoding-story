@@ -1,9 +1,5 @@
 import "../styles/styles.css";
 import "leaflet/dist/leaflet.css";
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
 import App from "./pages/app";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -15,7 +11,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   await app.renderPage();
 
-<<<<<<< HEAD
   window.addEventListener("hashchange", async () => {
     if (document.startViewTransition) {
       document.startViewTransition(async () => {
@@ -38,13 +33,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-=======
-  // Pastikan pengelolaan event hashchange dilakukan dengan benar
-  window.addEventListener("hashchange", async (event) => {
-    if (document.startViewTransition) {
-      event.preventDefault(); 
-      await app.renderPage(); 
-    }
-  });
-});
->>>>>>> origin/main
