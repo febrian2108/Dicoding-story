@@ -39,8 +39,8 @@ const StoriesAPI = {
 
     const responseJson = await response.json();
 
-    if (!responseJson.error) {
-      // simpan ke local storage
+    if (response.ok && !responseJson.error) {
+      // Simpan token ke localStorage
       localStorage.setItem("user", JSON.stringify(responseJson.loginResult));
     }
 
@@ -51,55 +51,110 @@ const StoriesAPI = {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      // Redirect to login page if user is not logged in
-      window.location.href = "/login";  // Adjust according to your routing setup
+      // Jika pengguna tidak login, tampilkan alert dan arahkan
+      if (window.location.pathname !== "/login") {
+        alert("Kamu harus login jika ingin melihat data dari API");
+        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+      }
       return;
     }
 
-    const response = await fetch(
-      `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`,
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
+    try {
+      const response = await fetch(
+        `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
 
-    return await response.json();
+      if (!response.ok) {
+        throw new Error('Terjadi kesalahan saat mengambil data cerita. Coba lagi nanti.');
+      }
+
+      const responseJson = await response.json();
+
+      // Pastikan responseJson ada dan dalam format yang benar
+      if (responseJson) {
+        return responseJson;
+      } else {
+        throw new Error('Format respons tidak valid.');
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { error: error.message || 'Terjadi kesalahan saat memuat data.' };
+    }
   },
 
   async getGuestStories(page = 1, size = 10, location = 0) {
-    const response = await fetch(
-      `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`
-    );
+    try {
+      const response = await fetch(
+        `${ENDPOINTS.STORIES}?page=${page}&size=${size}&location=${location}`
+      );
 
-    return await response.json();
+      if (!response.ok) {
+        throw new Error('Terjadi kesalahan saat mengambil data cerita tamu.');
+      }
+
+      const responseJson = await response.json();
+
+      if (responseJson) {
+        return responseJson;
+      } else {
+        throw new Error('Format respons tidak valid.');
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { error: error.message || 'Terjadi kesalahan saat mengambil cerita tamu.' };
+    }
   },
 
   async getStoryDetail(id) {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      // Redirect to login page if user is not logged in
-      window.location.href = "/login";  // Adjust according to your routing setup
+      // Jika pengguna tidak login, tampilkan alert dan arahkan
+      if (window.location.pathname !== "/login") {
+        alert("Kamu harus login jika ingin melihat data dari API");
+        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+      }
       return;
     }
 
-    const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    });
+    try {
+      const response = await fetch(ENDPOINTS.STORY_DETAIL(id), {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      });
 
-    return await response.json();
+      if (!response.ok) {
+        throw new Error('Terjadi kesalahan saat mengambil detail cerita.');
+      }
+
+      const responseJson = await response.json();
+
+      if (responseJson) {
+        return responseJson;
+      } else {
+        throw new Error('Format respons tidak valid.');
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { error: error.message || 'Terjadi kesalahan saat mengambil detail cerita.' };
+    }
   },
 
   async addStory({ description, photo, lat, lon }) {
     const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user || !user.token) {
-      // Redirect to login page if user is not logged in
-      window.location.href = "/login";  // Adjust according to your routing setup
+      // Jika pengguna tidak login, tampilkan alert dan arahkan
+      if (window.location.pathname !== "/login") {
+        alert("Kamu harus login jika ingin melihat data dari API");
+        window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
+      }
       return;
     }
 
@@ -112,15 +167,30 @@ const StoriesAPI = {
       formData.append("lon", lon);
     }
 
-    const response = await fetch(ENDPOINTS.STORIES, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-      body: formData,
-    });
+    try {
+      const response = await fetch(ENDPOINTS.STORIES, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
 
-    return await response.json();
+      if (!response.ok) {
+        throw new Error('Terjadi kesalahan saat menambahkan cerita.');
+      }
+
+      const responseJson = await response.json();
+
+      if (responseJson) {
+        return responseJson;
+      } else {
+        throw new Error('Format respons tidak valid.');
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { error: error.message || 'Terjadi kesalahan saat menambahkan cerita.' };
+    }
   },
 
   async addGuestStory({ description, photo, lat, lon }) {
@@ -133,12 +203,27 @@ const StoriesAPI = {
       formData.append("lon", lon);
     }
 
-    const response = await fetch(ENDPOINTS.GUEST_STORY, {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const response = await fetch(ENDPOINTS.GUEST_STORY, {
+        method: "POST",
+        body: formData,
+      });
 
-    return await response.json();
+      if (!response.ok) {
+        throw new Error('Terjadi kesalahan saat menambahkan cerita tamu.');
+      }
+
+      const responseJson = await response.json();
+
+      if (responseJson) {
+        return responseJson;
+      } else {
+        throw new Error('Format respons tidak valid.');
+      }
+    } catch (error) {
+      console.error('Error:', error.message);
+      return { error: error.message || 'Terjadi kesalahan saat menambahkan cerita tamu.' };
+    }
   },
 
   checkAuth() {
@@ -149,7 +234,7 @@ const StoriesAPI = {
   logout() {
     localStorage.removeItem("user");
     // Redirect to login page after logout
-    window.location.href = "/login";  // Adjust according to your routing setup
+    window.location.href = "https://your-app-name.vercel.app/login#/login";  // Sesuaikan dengan pengaturan routing Anda
   },
 };
 
