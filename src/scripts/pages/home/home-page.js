@@ -1,4 +1,4 @@
-import HomePresenter from "./home-controller.js";
+import HomePresenter from "./home-presenter.js";
 import { showFormattedDate } from "../../utils/index";
 import MapUtils from "../../utils/map";
 

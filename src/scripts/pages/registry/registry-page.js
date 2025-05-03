@@ -1,5 +1,5 @@
 import StoriesAPI from "../../data/api";
-import registryPresenter from "./registry-controller";
+import registryPresenter from "./registry-presenter";
 
 export default class registryPage {
   async render() {
