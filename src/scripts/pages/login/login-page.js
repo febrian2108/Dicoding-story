@@ -56,7 +56,6 @@ export default class LoginPage {
 
           Auth._checkLoginStatus();
 
-          // kembali ke beranda
           window.location.hash = "#/";
         }
       } catch (error) {

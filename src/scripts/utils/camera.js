@@ -1,115 +1,139 @@
-const CameraUtils = {
-    async init({
-        videoElement,
-        canvas,
-        startButton,
-        captureButton,
-        resetButton,
-    }) {
-        this._video = videoElement;
-        this._canvas = canvas;
-        this._startButton = startButton;
-        this._captureButton = captureButton;
-        this._resetButton = resetButton;
+class CameraHelper {
+    constructor() {
         this._stream = null;
-        this._photoData = null;
+        this._videoElement = null;
+        this._canvasElement = null;
+    }
 
-        this._addEventListeners();
-    },
+    async initCamera(videoElement, constraints = {}) {
+        if (!videoElement) {
+            throw new Error("Video element is required");
+        }
 
-    _addEventListeners() {
-        this._startButton.addEventListener("click", () => {
-            this.startCamera();
-        });
+        this._videoElement = videoElement;
 
-        this._captureButton.addEventListener("click", () => {
-            this.capturePhoto();
-        });
+        const defaultConstraints = {
+            video: {
+                facingMode: "environment",
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+            },
+            audio: false,
+        };
 
-        this._resetButton.addEventListener("click", () => {
-            this.resetCamera();
-        });
-    },
+        const mergedConstraints = { ...defaultConstraints, ...constraints };
 
-    async startCamera() {
         try {
-            this._stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "environment" },
-                audio: false,
-            });
+            this.stopCamera();
 
-            this._video.srcObject = this._stream;
-            this._video.style.display = "block";
-            this._canvas.style.display = "none";
-            this._startButton.style.display = "none";
-            this._captureButton.style.display = "inline-block";
-            this._resetButton.style.display = "inline-block";
+            this._stream = await navigator.mediaDevices.getUserMedia(
+                mergedConstraints
+            );
+
+            this._videoElement.srcObject = this._stream;
+            await this._videoElement.play();
+
+            return this._stream;
         } catch (error) {
-            console.error("Error starting camera:", error);
-            alert(
-                "Failed to access camera. Please make sure you have given permission to use the camera."
-            );
+            console.error("Camera initialization failed:", error);
+            throw new Error(`Could not access camera: ${error.message}`);
         }
-    },
+    }
 
-    capturePhoto() {
-        const context = this._canvas.getContext("2d");
-        const width = this._video.videoWidth;
-        const height = this._video.videoHeight;
-
-        if (width && height) {
-            this._canvas.width = width;
-            this._canvas.height = height;
-            context.drawImage(this._video, 0, 0, width, height);
-
-            this._photoData = this._dataURItoBlob(
-                this._canvas.toDataURL("image/jpeg")
-            );
-
-            this._video.style.display = "none";
-            this._canvas.style.display = "block";
-            this._captureButton.style.display = "none";
-        }
-    },
-
-    resetCamera() {
+    stopCamera() {
         if (this._stream) {
             this._stream.getTracks().forEach((track) => track.stop());
             this._stream = null;
         }
 
-        this._video.srcObject = null;
-        this._photoData = null;
-        this._video.style.display = "none";
-        this._canvas.style.display = "none";
-        this._startButton.style.display = "inline-block";
-        this._captureButton.style.display = "none";
-        this._resetButton.style.display = "none";
-    },
+        if (this._videoElement) {
+            this._videoElement.srcObject = null;
+        }
+    }
 
-    getPhotoData() {
-        return this._photoData;
-    },
-
-    _dataURItoBlob(dataURI) {
-        const byteString = atob(dataURI.split(",")[1]);
-        const mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
+    takePhoto(canvasElement) {
+        if (!canvasElement) {
+            throw new Error("Canvas element is required");
         }
 
-        return new Blob([ab], { type: mimeString });
-    },
-
-    clean() {
-        if (this._stream) {
-            this._stream.getTracks().forEach((track) => track.stop());
-            this._stream = null;
+        if (!this._stream || !this._videoElement) {
+            throw new Error("Camera not initialized. Call initCamera first.");
         }
-    },
-};
 
-export default CameraUtils;
+        this._canvasElement = canvasElement;
+
+        const width = this._videoElement.videoWidth;
+        const height = this._videoElement.videoHeight;
+        this._canvasElement.width = width;
+        this._canvasElement.height = height;
+
+        const context = this._canvasElement.getContext("2d");
+        context.drawImage(this._videoElement, 0, 0, width, height);
+
+        return this._getBlobFromCanvas();
+    }
+
+    getPhotoFile(filename = "photo.jpg") {
+        if (!this._canvasElement) {
+            throw new Error("No photo has been taken. Call takePhoto first.");
+        }
+
+        return this._getBlobFromCanvas().then((blob) => {
+            return new File([blob], filename, { type: "image/jpeg" });
+        });
+    }
+
+    async switchCamera() {
+        if (!this._videoElement) {
+            throw new Error("Camera not initialized. Call initCamera first.");
+        }
+
+        const currentTrack = this._stream.getVideoTracks()[0];
+        const settings = currentTrack.getSettings();
+
+        const newFacingMode =
+            settings.facingMode === "user" ? "environment" : "user";
+
+        const constraints = {
+            video: {
+                facingMode: newFacingMode,
+                width: { ideal: 1280 },
+                height: { ideal: 720 },
+            },
+            audio: false,
+        };
+
+        return this.initCamera(this._videoElement, constraints);
+    }
+
+    static async isCameraSupported() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            return false;
+        }
+
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+            stream.getTracks().forEach((track) => track.stop());
+
+            return true;
+        } catch (error) {
+            console.error("Camera not supported:", error);
+            return false;
+        }
+    }
+
+    _getBlobFromCanvas() {
+        return new Promise((resolve) => {
+            this._canvasElement.toBlob(
+                (blob) => {
+                    resolve(blob);
+                },
+                "image/jpeg",
+                0.8
+            );
+        });
+    }
+}
+
+export default CameraHelper;
