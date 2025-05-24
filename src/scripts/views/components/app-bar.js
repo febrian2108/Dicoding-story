@@ -77,13 +77,11 @@ class AppBar extends HTMLElement {
         : `
                 <li class="app-nav__item">
                   <a href="#/login" class="app-nav__link">
-                    <i class="fas fa-sign-in-alt"></i>
                     <span>Login</span>
                   </a>
                 </li>
                 <li class="app-nav__item">
                   <a href="#/register" class="app-nav__link app-nav__link--register">
-                    <i class="fas fa-user-plus"></i>
                     <span>Register</span>
                   </a>
                 </li>
