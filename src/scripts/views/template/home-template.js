@@ -35,6 +35,7 @@ const createHomeTemplate = ({
   const mapTemplate = `
     <div class="map-container">
       <h3 class="map-title">
+        <i class="fas fa-map-marked-alt"></i>
         Story Locations
       </h3>
       <div id="storyMap" class="story-map"></div>
@@ -45,8 +46,8 @@ const createHomeTemplate = ({
     <div class="stories-empty">
       <i class="fas fa-book-open stories-empty__icon"></i>
       <p>No stories available yet. Be the first to share your story!</p>
-      <a href="#/add" class="button"> 
-        Add New Story
+      <a href="#/add" class="button">
+        <i class="fas fa-plus-circle"></i> Add New Story
       </a>
     </div>
   `;

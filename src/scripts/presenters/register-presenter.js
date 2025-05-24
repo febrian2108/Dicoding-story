@@ -1,6 +1,6 @@
 import RegisterPage from "../views/pages/register-pages.js";
 import authRepository from "../data/auth-repository.js";
-import { applyCustomAnimation } from "../utils/view.js";
+import { applyCustomAnimation } from "../utils/view-transition.js";
 import Swal from "sweetalert2";
 
 class RegisterPresenter {
@@ -10,6 +10,7 @@ class RegisterPresenter {
         this._container = document.querySelector("#pageContent");
         this._error = null;
         this._isLoading = false;
+
         this._handleRegister = this._handleRegister.bind(this);
     }
 
@@ -45,8 +46,14 @@ class RegisterPresenter {
         this._view.setRegisterHandler(this._handleRegister);
     }
 
+    /**
+     * Handle registration form submission
+     * @param {Object} userData - User registration data
+     */
     async _handleRegister(userData) {
-        if (this._isLoading) return;
+        if (this._isLoading) {
+            return;
+        }
 
         try {
             this._isLoading = true;

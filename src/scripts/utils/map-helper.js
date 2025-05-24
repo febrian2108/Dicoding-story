@@ -13,6 +13,12 @@ class MapHelper {
         this._baseLayers = {};
     }
 
+    /**
+     * Initialize map in container element
+     * @param {HTMLElement} containerElement - DOM element to render map
+     * @param {Object} options - Map initialization options (optional)
+     * @returns {Object} Leaflet map instance
+     */
     initMap(containerElement, options = {}) {
         if (!containerElement) {
             throw new Error("Container element is required");
@@ -40,6 +46,10 @@ class MapHelper {
         return this._map;
     }
 
+    /**
+     * Add markers to the map for each story with location
+     * @param {Array} stories - Array of story objects with lat and lon properties
+     */
     addStoryMarkers(stories) {
         if (!this._map) {
             throw new Error("Map not initialized. Call initMap first.");
@@ -59,7 +69,9 @@ class MapHelper {
 
         storiesWithLocation.forEach((story) => {
             const marker = L.marker([story.lat, story.lon]);
+
             marker.bindPopup(this._createPopupContent(story));
+
             marker.addTo(this._map);
             this._markers.push(marker);
         });
@@ -75,6 +87,10 @@ class MapHelper {
         }
     }
 
+    /**
+     * Setup map for location selection (click to set marker)
+     * @param {Function} onLocationSelected - Callback when location is selected
+     */
     setupLocationSelector(onLocationSelected) {
         if (!this._map) {
             throw new Error("Map not initialized. Call initMap first.");
@@ -98,6 +114,10 @@ class MapHelper {
         });
     }
 
+    /**
+     * Get user's current location and center map
+     * @returns {Promise<Object>} Location coordinates { lat, lon }
+     */
     async getUserLocation() {
         return new Promise((resolve, reject) => {
             if (!navigator.geolocation) {
@@ -134,10 +154,17 @@ class MapHelper {
         });
     }
 
+    /**
+     * Get currently selected location
+     * @returns {Object|null} Selected location { lat, lon } or null
+     */
     getSelectedLocation() {
         return this._selectedLocation;
     }
 
+    /**
+     * Clear all markers from the map
+     */
     clearMarkers() {
         if (this._map) {
             this._markers.forEach((marker) => this._map.removeLayer(marker));
@@ -145,6 +172,10 @@ class MapHelper {
         }
     }
 
+    /**
+     * Add default OSM tile layer to map
+     * @private
+     */
     _addDefaultTileLayer() {
         const osmLayer = L.tileLayer(API_CONFIG.MAP.TILE_LAYER, {
             attribution: API_CONFIG.MAP.ATTRIBUTION,
@@ -154,6 +185,11 @@ class MapHelper {
         this._baseLayers["OpenStreetMap"] = osmLayer;
     }
 
+    /**
+     * Add secondary tile layer for layer control
+     * @param {Object} layerConfig - Configuration for secondary layer
+     * @private
+     */
     _addSecondaryTileLayer(layerConfig) {
         if (!layerConfig || !layerConfig.url) {
             return;
@@ -168,6 +204,12 @@ class MapHelper {
         this._baseLayers[layerConfig.name || "Satellite"] = secondaryLayer;
     }
 
+    /**
+     * Create popup content for a story marker
+     * @param {Object} story - Story data
+     * @returns {HTMLElement} Popup content
+     * @private
+     */
     _createPopupContent(story) {
         const popupContent = document.createElement("div");
         popupContent.className = "map-popup";
@@ -200,6 +242,13 @@ class MapHelper {
         return popupContent;
     }
 
+    /**
+     * Truncate text to specified length
+     * @param {string} text - Text to truncate
+     * @param {number} maxLength - Maximum length
+     * @returns {string} Truncated text
+     * @private
+     */
     _truncateText(text, maxLength) {
         if (!text || text.length <= maxLength) {
             return text;

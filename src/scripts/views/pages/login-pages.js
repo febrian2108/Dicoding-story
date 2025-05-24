@@ -36,6 +36,10 @@ class LoginPage {
         }
     }
 
+    /**
+     * Validate form before submission
+     * @returns {boolean} Whether form is valid
+     */
     _validateForm() {
         const email = document.getElementById("email");
         const password = document.getElementById("password");
@@ -56,6 +60,11 @@ class LoginPage {
         return true;
     }
 
+    /**
+     * Show form field error
+     * @param {HTMLElement} field - Form field
+     * @param {string} message - Error message
+     */
     _showFieldError(field, message) {
         field.classList.add("form-input--error");
 
@@ -80,10 +89,18 @@ class LoginPage {
         );
     }
 
+    /**
+     * Set login handler function
+     * @param {Function} handler - Login handler function
+     */
     setLoginHandler(handler) {
         this._loginHandler = handler;
     }
 
+    /**
+     * Set loading state
+     * @param {boolean} isLoading - Whether login is in progress
+     */
     setLoading(isLoading) {
         this._isLoading = isLoading;
 
@@ -91,8 +108,8 @@ class LoginPage {
         if (loginButton) {
             loginButton.disabled = isLoading;
             loginButton.innerHTML = isLoading
-                ? 'Logging in...'
-                : 'Login';
+                ? '<i class="fas fa-spinner fa-spin"></i> Logging in...'
+                : '<i class="fas fa-sign-in-alt"></i> Login';
         }
 
         const formFields = this._container.querySelectorAll(".form-input");
@@ -101,7 +118,9 @@ class LoginPage {
         });
     }
 
-    cleanup() { }
+    cleanup() {
+        // Nothing to clean up
+    }
 }
 
 export default LoginPage;

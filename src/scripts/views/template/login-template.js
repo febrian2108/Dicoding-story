@@ -1,18 +1,18 @@
 const createLoginTemplate = ({ error = null, isLoading = false }) => {
-    const errorComponent = error
-        ? `
+  const errorComponent = error
+    ? `
         <div class="auth-error">
           <i class="fas fa-exclamation-circle"></i>
           <p>${error}</p>
         </div>
       `
-        : "";
+    : "";
 
-    const buttonContent = isLoading
-        ? 'Logging in...'
-        : 'Login';
+  const buttonContent = isLoading
+    ? '<i class="fas fa-spinner fa-spin"></i> Logging in...'
+    : '<i class="fas fa-sign-in-alt"></i> Login';
 
-    return `
+  return `
       <section class="auth">
         <div class="auth-container">
           <h2 class="auth__title">Login</h2>
@@ -27,7 +27,7 @@ const createLoginTemplate = ({ error = null, isLoading = false }) => {
                 id="email" 
                 name="email" 
                 class="form-input" 
-                placeholder="email@example.com" 
+                placeholder="your.email@example.com" 
                 required
                 ${isLoading ? "disabled" : ""}
               />
@@ -60,7 +60,8 @@ const createLoginTemplate = ({ error = null, isLoading = false }) => {
           </form>
           
           <div class="auth-footer">
-            <p>Don't have an account? <a href="#/register" class="auth-link">Register here</a></p>
+            <p>Don't have an account?</p>
+            <a href="#/register" class="auth-link">Register here</a>
           </div>
         </div>
       </section>

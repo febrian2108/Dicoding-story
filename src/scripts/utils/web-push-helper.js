@@ -8,6 +8,10 @@ class WebPushHelper {
         this._isSubscribed = false;
     }
 
+    /**
+     * Initialize web push functionality
+     * @returns {Promise<boolean>} Whether push is supported and initialized
+     */
     async init() {
         if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
             console.warn("Push notifications are not supported in this browser");
@@ -27,6 +31,10 @@ class WebPushHelper {
         }
     }
 
+    /**
+     * Subscribe to push notifications
+     * @returns {Promise<Object>} Subscription details
+     */
     async subscribe() {
         if (!this._swRegistration) {
             throw new Error("Service worker not registered. Call init() first.");
@@ -69,6 +77,10 @@ class WebPushHelper {
         }
     }
 
+    /**
+     * Unsubscribe from push notifications
+     * @returns {Promise<boolean>} Whether unsubscription was successful
+     */
     async unsubscribe() {
         if (!this._swRegistration) {
             throw new Error("Service worker not registered. Call init() first.");
@@ -114,6 +126,11 @@ class WebPushHelper {
         }
     }
 
+    /**
+     * Check if notifications are already subscribed
+     * @returns {Promise<boolean>} Whether user is subscribed
+     * @private
+     */
     async _checkSubscription() {
         if (!this._swRegistration) {
             return false;
@@ -124,6 +141,12 @@ class WebPushHelper {
         return !!subscription;
     }
 
+    /**
+     * Format subscription data for API
+     * @param {PushSubscription} subscription - Push subscription
+     * @returns {Object} Formatted subscription data
+     * @private
+     */
     _formatSubscriptionForApi(subscription) {
         const subscriptionJson = subscription.toJSON();
 
@@ -136,6 +159,12 @@ class WebPushHelper {
         };
     }
 
+    /**
+     * Convert base64 string to Uint8Array for applicationServerKey
+     * @param {string} base64String - Base64 encoded string
+     * @returns {Uint8Array} Converted array
+     * @private
+     */
     _urlBase64ToUint8Array(base64String) {
         const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding)
@@ -152,16 +181,24 @@ class WebPushHelper {
         return outputArray;
     }
 
+    /**
+     * Check if user is subscribed to push notifications
+     * @returns {boolean} Whether user is subscribed
+     */
     isSubscribed() {
         return this._isSubscribed;
     }
 
+    /**
+     * Request notification permission
+     * @returns {Promise<string>} Permission status
+     */
     async requestPermission() {
         if (!("Notification" in window)) {
             throw new Error("This browser does not support notifications");
         }
 
-        const result = await Swal.fire({
+        Swal.fire({
             title: "Aktifkan Notifikasi?",
             text: "Kami akan memberi tahu Anda saat ada story baru.",
             icon: "question",
@@ -170,26 +207,24 @@ class WebPushHelper {
             cancelButtonColor: "#6B7280",
             confirmButtonText: "Ya, aktifkan!",
             cancelButtonText: "Nanti saja",
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const permission = await Notification.requestPermission();
+
+                if (permission === "granted") {
+                    this.subscribe();
+                } else {
+                    Swal.fire({
+                        title: "Notifikasi Tidak Diizinkan",
+                        text: "Anda dapat mengaktifkannya nanti melalui pengaturan browser.",
+                        icon: "info",
+                        confirmButtonColor: "#2563EB",
+                    });
+                }
+
+                return permission;
+            }
         });
-
-        if (!result.isConfirmed) {
-            return null;
-        }
-
-        const permission = await Notification.requestPermission();
-
-        if (permission === "granted") {
-            await this.subscribe();
-        } else {
-            await Swal.fire({
-                title: "Notifikasi Tidak Diizinkan",
-                text: "Anda dapat mengaktifkannya nanti melalui pengaturan browser.",
-                icon: "info",
-                confirmButtonColor: "#2563EB",
-            });
-        }
-
-        return permission;
     }
 }
 

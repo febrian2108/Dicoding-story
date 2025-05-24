@@ -21,7 +21,7 @@ export const registerSW = () => {
         },
         onOfflineReady() {
             Swal.fire({
-                title: "Aplikasi offline!",
+                title: "Aplikasi siap offline!",
                 text: "Anda dapat menggunakan aplikasi ini tanpa koneksi internet.",
                 icon: "success",
                 confirmButtonColor: "#2563EB",

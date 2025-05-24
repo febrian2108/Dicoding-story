@@ -1,21 +1,21 @@
 const createDetailTemplate = ({
-    isLoading = false,
-    error = null,
-    story = null,
+  isLoading = false,
+  error = null,
+  story = null,
 }) => {
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(date);
-    };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  };
 
-    if (isLoading) {
-        return `
+  if (isLoading) {
+    return `
         <section class="detail">
           <div class="detail__header">
             <h2 class="detail__title">Story Details</h2>
@@ -30,10 +30,10 @@ const createDetailTemplate = ({
           </div>
         </section>
       `;
-    }
+  }
 
-    if (error) {
-        return `
+  if (error) {
+    return `
         <section class="detail">
           <div class="detail__header">
             <h2 class="detail__title">Story Details</h2>
@@ -51,10 +51,10 @@ const createDetailTemplate = ({
           </div>
         </section>
       `;
-    }
+  }
 
-    if (!story) {
-        return `
+  if (!story) {
+    return `
         <section class="detail">
           <div class="detail__header">
             <h2 class="detail__title">Story Details</h2>
@@ -72,11 +72,11 @@ const createDetailTemplate = ({
           </div>
         </section>
       `;
-    }
+  }
 
-    const mapTemplate =
-        story.lat && story.lon
-            ? `
+  const mapTemplate =
+    story.lat && story.lon
+      ? `
         <div class="story-detail__map-container">
           <h4 class="story-detail__map-title">
             <i class="fas fa-map-marker-alt"></i> Story Location
@@ -84,9 +84,9 @@ const createDetailTemplate = ({
           <div id="detailMap" class="story-detail__map"></div>
         </div>
       `
-            : "";
+      : "";
 
-    return `
+  return `
       <section class="detail">
         <div class="detail__header">
           <h2 class="detail__title">Story Details</h2>
@@ -99,7 +99,7 @@ const createDetailTemplate = ({
           <div class="story-detail__image-container">
             <img 
               src="${story.photoUrl}" 
-              alt="${story.name}"
+              alt="Story by ${story.name}"
               class="story-detail__image"
             />
           </div>
@@ -116,7 +116,7 @@ const createDetailTemplate = ({
               </div>
             </div>
             
-            <h3 class="story-detail__title">${story.name}</h3>
+            <h3 class="story-detail__title">Story by ${story.name}</h3>
             
             <div class="story-detail__description">
               ${story.description}

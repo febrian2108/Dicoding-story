@@ -11,7 +11,7 @@ const API_CONFIG = {
         "Content-Type": "application/json",
     },
     MAP: {
-        DEFAULT_CENTER: [-5.3971, 105.2668],
+        DEFAULT_CENTER: [-6.2088, 106.8456],
         DEFAULT_ZOOM: 13,
         TILE_LAYER: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         ATTRIBUTION:
@@ -26,7 +26,7 @@ const API_CONFIG = {
     },
     WEB_PUSH: {
         VAPID_PUBLIC_KEY:
-            "BJMsrLykUJ57EdhQWxRFpJmSHeGUcp5GMGCeHNr8Pzsct-KGrxTY5FOHjX9k0Ap5f4wUf7GZmCXgpZYuC8cRvVw",
+            "BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk",
     },
 };
 

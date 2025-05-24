@@ -1,7 +1,7 @@
 import LoginPage from "../views/pages/login-pages.js";
 import authRepository from "../data/auth-repository.js";
-import webPushHelper from "../utils/web-push.js";
-import { applyCustomAnimation } from "../utils/view.js";
+import webPushHelper from "../utils/web-push-helper.js";
+import { applyCustomAnimation } from "../utils/view-transition.js";
 import Swal from "sweetalert2";
 
 class LoginPresenter {
@@ -11,6 +11,7 @@ class LoginPresenter {
         this._container = document.querySelector("#pageContent");
         this._error = null;
         this._isLoading = false;
+
         this._handleLogin = this._handleLogin.bind(this);
     }
 
@@ -28,6 +29,9 @@ class LoginPresenter {
         this._renderView();
     }
 
+    /**
+     * Render the view with current state
+     */
     _renderView() {
         this._view = new LoginPage({
             error: this._error,
@@ -39,8 +43,14 @@ class LoginPresenter {
         this._view.setLoginHandler(this._handleLogin);
     }
 
+    /**
+     * Handle login form submission
+     * @param {Object} credentials - Login credentials
+     */
     async _handleLogin(credentials) {
-        if (this._isLoading) return;
+        if (this._isLoading) {
+            return;
+        }
 
         try {
             this._isLoading = true;

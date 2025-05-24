@@ -1,113 +1,98 @@
-import AddStoryPage from "../views/pages/add-story-pages.js";
+import DetailPage from "../views/pages/detail-pages.js";
 import storyRepository from "../data/story-repository.js";
-import authRepository from "../data/auth-repository.js";
-import webPushHelper from "../utils/web-push.js";
-import { applyCustomAnimation } from "../utils/view.js";
-import Swal from "sweetalert2";
+import { applyCustomAnimation } from "../utils/view-transition.js";
 
-class AddStoryPresenter {
+class DetailPresenter {
     constructor(params = {}) {
         this._params = params;
+        this._storyId = params.id;
         this._view = null;
         this._container = document.querySelector("#pageContent");
         this._isLoading = false;
-        this._handleSubmit = this._handleSubmit.bind(this);
+        this._error = null;
+        this._story = null;
+
+        this._fetchStory = this._fetchStory.bind(this);
+        this._handleRetry = this._handleRetry.bind(this);
     }
 
     async init() {
-        if (!authRepository.isAuthenticated()) {
-            Swal.fire({
-                title: "Authentication Required",
-                text: "Please login to add a new story",
-                icon: "warning",
-                confirmButtonColor: "#2563EB",
-            }).then(() => {
-                window.location.hash = "#/login";
-            });
+        if (!this._storyId) {
+            this._error = "Story ID is required";
+            this._renderError();
             return;
         }
 
+        this._renderLoading();
+
         applyCustomAnimation("#pageContent", {
-            name: "add-story-transition",
+            name: "detail-transition",
             duration: 400,
         });
 
-        this._renderView();
+        await this._fetchStory();
     }
 
-    _renderView() {
-        this._view = new AddStoryPage({
-            isLoading: this._isLoading,
+    async _fetchStory() {
+        try {
+            this._isLoading = true;
+            this._error = null;
+
+            this._renderLoading();
+
+            const response = await storyRepository.getStoryById(this._storyId);
+
+            this._story = response.story;
+            this._isLoading = false;
+
+            this._renderView();
+        } catch (error) {
+            console.error(`Failed to fetch story with ID ${this._storyId}:`, error);
+
+            this._isLoading = false;
+            this._error =
+                error.message || "Failed to load story details. Please try again.";
+
+            this._renderError();
+        }
+    }
+
+    _renderLoading() {
+        this._view = new DetailPage({
+            isLoading: true,
+            story: null,
+            error: null,
             container: this._container,
         });
 
         this._view.render();
-        this._view.setSubmitHandler(this._handleSubmit);
     }
 
-    async _handleSubmit(storyData) {
-        if (this._isLoading) {
-            return;
-        }
+    _renderError() {
+        this._view = new DetailPage({
+            isLoading: false,
+            story: null,
+            error: this._error,
+            container: this._container,
+        });
 
-        try {
-            this._isLoading = true;
-
-            if (this._view) {
-                this._view.setLoading(true);
-            }
-
-            const isAuthenticated = authRepository.isAuthenticated();
-
-            const response = await storyRepository.addStory(
-                storyData,
-                isAuthenticated
-            );
-
-            if (this._view) {
-                this._view.showSuccessMessage();
-            }
-
-            Swal.fire({
-                title: "Story Posted!",
-                text: "Your story has been successfully shared",
-                icon: "success",
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false,
-            });
-
-            this._triggerPushNotification(storyData.description);
-
-            setTimeout(() => {
-                window.location.hash = "#/";
-            }, 2000);
-        } catch (error) {
-            console.error("Failed to submit story:", error);
-
-            Swal.fire({
-                title: "Failed to Post Story",
-                text: error.message || "An error occurred while posting your story",
-                icon: "error",
-                confirmButtonColor: "#2563EB",
-            });
-
-            this._isLoading = false;
-
-            if (this._view) {
-                this._view.setLoading(false);
-            }
-        }
+        this._view.render();
+        this._view.setRetryHandler(this._handleRetry);
     }
 
-    async _triggerPushNotification(description) {
-        try {
-            if (webPushHelper.isSubscribed()) {
-                console.log("Push notification may be sent by the server");
-            }
-        } catch (error) {
-            console.error("Failed to handle push notification:", error);
-        }
+    _renderView() {
+        this._view = new DetailPage({
+            isLoading: false,
+            story: this._story,
+            error: null,
+            container: this._container,
+        });
+
+        this._view.render();
+    }
+
+    _handleRetry() {
+        this._fetchStory();
     }
 
     cleanup() {
@@ -117,4 +102,4 @@ class AddStoryPresenter {
     }
 }
 
-export default AddStoryPresenter;
+export default DetailPresenter;

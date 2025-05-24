@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-import { resolve } from 'path';
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
@@ -12,7 +11,7 @@ export default defineConfig({
       includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       manifest: {
         name: "Story Apps",
-        short_name: "Story App",
+        short_name: "Story Apps",
         description: "Share your stories with others",
         theme_color: "#2563EB",
         icons: [
@@ -29,6 +28,12 @@ export default defineConfig({
           {
             src: "/src/public/favicon.png",
             sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable",
+          },
+          {
+            src: "/src/public/favicon.png",
+            sizes: "144x144",
             type: "image/png",
             purpose: "any maskable",
           },

@@ -1,39 +1,56 @@
 class StoryItem extends HTMLElement {
-    set story(story) {
-        this._story = story;
-        this.render();
+  /**
+   * Set the story data to display
+   * @param {Object} story - Story data object
+   */
+  set story(story) {
+    this._story = story;
+    this.render();
+  }
+
+  /**
+   * Format date to localized string
+   * @param {string} dateString - ISO date string
+   * @returns {string} Formatted date
+   */
+  _formatDate(dateString) {
+    const date = new Date(dateString);
+
+    return new Intl.DateTimeFormat("id-ID", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(date);
+  }
+
+  /**
+   * Truncate text to specified length
+   * @param {string} text - Text to truncate
+   * @param {number} maxLength - Maximum length
+   * @returns {string} Truncated text
+   */
+  _truncateText(text, maxLength = 150) {
+    if (!text || text.length <= maxLength) {
+      return text;
     }
 
-    _formatDate(dateString) {
-        const date = new Date(dateString);
-        return new Intl.DateTimeFormat("id-ID", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(date);
+    return text.substring(0, maxLength) + "...";
+  }
+
+  render() {
+    if (!this._story) {
+      this.innerHTML =
+        '<div class="story-item__error">No story data available</div>';
+      return;
     }
 
-    _truncateText(text, maxLength = 150) {
-        if (!text || text.length <= maxLength) {
-            return text;
-        }
-        return text.substring(0, maxLength) + "...";
-    }
+    const { id, name, description, photoUrl, createdAt, lat, lon } =
+      this._story;
+    const hasLocation = lat && lon && !isNaN(lat) && !isNaN(lon);
 
-    render() {
-        if (!this._story) {
-            this.innerHTML =
-                '<div class="story-item__error">No story data available</div>';
-            return;
-        }
-
-        const { id, name, description, photoUrl, createdAt, lat, lon } =
-            this._story;
-        const hasLocation = lat && lon && !isNaN(lat) && !isNaN(lon);
-
-        this.innerHTML = `
+    this.innerHTML = `
         <article class="story-item">
           <div class="story-item__image-container">
             <img 
@@ -55,19 +72,19 @@ class StoryItem extends HTMLElement {
                 ${this._formatDate(createdAt)}
               </span>
               ${hasLocation
-                ? `
+        ? `
                 <span class="story-item__location">
                   <i class="fas fa-map-marker-alt"></i>
                   Location Available
                 </span>
               `
-                : ""
-            }
+        : ""
+      }
             </div>
             
             <h3 class="story-item__title">
               <a href="#/detail/${id}" class="story-item__link">
-                ${name}
+                Story by ${name}
               </a>
             </h3>
             
@@ -84,7 +101,7 @@ class StoryItem extends HTMLElement {
           </div>
         </article>
       `;
-    }
+  }
 }
 
 customElements.define("story-item", StoryItem);

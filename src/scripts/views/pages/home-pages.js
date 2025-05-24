@@ -1,6 +1,6 @@
 import createHomeTemplate from "../template/home-template.js";
 import "../components/story-item.js";
-import MapHelper from "../../utils/map.js";
+import MapHelper from "../../utils/map-helper.js";
 
 class HomePage {
     constructor({ stories = [], isLoading = false, error = null, container }) {
@@ -69,6 +69,10 @@ class HomePage {
         }
     }
 
+    /**
+     * Set retry handler function
+     * @param {Function} handler - Retry handler function
+     */
     setRetryHandler(handler) {
         this._retryHandler = handler;
 

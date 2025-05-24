@@ -48,24 +48,16 @@ class AppBar extends HTMLElement {
           <i class="fas fa-bars"></i>
         </button>
         
-        <ul class="app-nav__list ${
-          this._isAuthenticated ? "" : "app-nav__list--guest"
-        }">
+        <ul class="app-nav__list ${this._isAuthenticated ? "" : "app-nav__list--guest"
+      }">
           <li class="app-nav__item">
             <a href="#/" class="app-nav__link">
               <span>Home</span>
             </a>
           </li>
-
-          <li class="app-nav__item">
-            <a href="#/saved-stories" class="app-nav__link">
-              <span>Saved Stories</span>
-            </a>
-          </li>
           
-          ${
-            this._isAuthenticated
-              ? `
+          ${this._isAuthenticated
+        ? `
                 <li class="app-nav__item">
                   <a href="#/add" class="app-nav__link">
                     <span>Add Story</span>
@@ -77,23 +69,26 @@ class AppBar extends HTMLElement {
                     <span>${userData.name || "User"}</span>
                   </span>
                   <button id="logoutButton" class="app-nav__button">
+                    <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>
                   </button>
                 </li>
               `
-              : `
+        : `
                 <li class="app-nav__item">
                   <a href="#/login" class="app-nav__link">
+                    <i class="fas fa-sign-in-alt"></i>
                     <span>Login</span>
                   </a>
                 </li>
                 <li class="app-nav__item">
                   <a href="#/register" class="app-nav__link app-nav__link--register">
+                    <i class="fas fa-user-plus"></i>
                     <span>Register</span>
                   </a>
                 </li>
               `
-          }
+      }
         </ul>
       </nav>
     `;

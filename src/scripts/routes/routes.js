@@ -3,9 +3,8 @@ import DetailPresenter from "../presenters/detail-presenter.js";
 import AddStoryPresenter from "../presenters/add-story-presenter.js";
 import LoginPresenter from "../presenters/login-presenter.js";
 import RegisterPresenter from "../presenters/register-presenter.js";
-import { applyViewTransition } from "../utils/view.js";
+import { applyViewTransition } from "../utils/view-transition.js";
 import authRepository from "../data/auth-repository.js";
-import SavedStoriesPage from '../pages/saved-stories-page.js';
 import Swal from "sweetalert2";
 
 const routes = {
@@ -14,7 +13,6 @@ const routes = {
   "/add": AddStoryPresenter,
   "/login": LoginPresenter,
   "/register": RegisterPresenter,
-  '/saved-stories': SavedStoriesPage,
 };
 
 const knownFragments = ["mainContent", "pageContent"];
@@ -123,21 +121,40 @@ class Router {
     }
   }
 
+  /**
+   * Navigate to a specific route
+   * @param {string} path - Route path
+   */
   navigate(path) {
     window.location.hash = path;
   }
 
+  /**
+   * Check if route requires authentication
+   * @param {string} route - Route to check
+   * @returns {boolean} Whether route is protected
+   */
   _isProtectedRoute(route) {
     const protectedRoutes = ["/add", "/detail"];
     return protectedRoutes.some((r) => route.startsWith(r));
   }
 
+  /**
+   * Check if user is authenticated
+   * @returns {boolean} Whether user is authenticated
+   */
   _isAuthenticated() {
     return authRepository.isAuthenticated();
   }
 
+  /**
+   * Convert route pattern to regex for matching
+   * @param {string} route - Route pattern
+   * @returns {RegExp} Route regex
+   */
   _convertRouteToRegex(route) {
     const pattern = route.replace(/\//g, "\\/").replace(/:\w+/g, "([^/]+)");
+
     return new RegExp(`^${pattern}$`);
   }
 }

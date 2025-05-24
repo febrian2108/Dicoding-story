@@ -1,6 +1,6 @@
 import createAddStoryTemplate from "../template/add-story-template.js";
-import MapHelper from "../../utils/map.js";
-import CameraHelper from "../../utils/camera.js";
+import MapHelper from "../../utils/map-helper.js";
+import CameraHelper from "../../utils/camera-helper.js";
 
 class AddStoryPage {
     constructor({ isLoading = false, container }) {
@@ -163,6 +163,10 @@ class AddStoryPage {
         }
     }
 
+    /**
+     * Handle location selection from map
+     * @param {Object} location - { lat, lon } coordinates
+     */
     _onLocationSelected(location) {
         this._selectedLocation = location;
         this._updateLocationUI();
@@ -201,6 +205,10 @@ class AddStoryPage {
         this._updatePhotoUI(false);
     }
 
+    /**
+     * Handle file selection from input
+     * @param {Event} event - Change event
+     */
     _handleFileInput(event) {
         const file = event.target.files[0];
         if (!file) {
@@ -227,6 +235,10 @@ class AddStoryPage {
         this._updatePhotoUI(true);
     }
 
+    /**
+     * Validate form before submission
+     * @returns {boolean} Whether form is valid
+     */
     _validateForm() {
         const description = document.getElementById("description");
         if (!description || !description.value.trim()) {
@@ -242,6 +254,10 @@ class AddStoryPage {
         return true;
     }
 
+    /**
+     * Get form data for submission
+     * @returns {Object} Form data
+     */
     _getFormData() {
         const description = document.getElementById("description").value.trim();
 
@@ -284,6 +300,10 @@ class AddStoryPage {
         }
     }
 
+    /**
+     * Update camera UI based on active state
+     * @param {boolean} isActive - Whether camera is active
+     */
     _updateCameraUI(isActive) {
         const startCameraButton = document.getElementById("startCameraButton");
         const takePictureButton = document.getElementById("takePictureButton");
@@ -296,6 +316,10 @@ class AddStoryPage {
         }
     }
 
+    /**
+     * Update photo UI based on whether photo is taken
+     * @param {boolean} hasPhoto - Whether photo is taken
+     */
     _updatePhotoUI(hasPhoto) {
         const resetPhotoButton = document.getElementById("resetPhotoButton");
         const startCameraButton = document.getElementById("startCameraButton");
@@ -352,12 +376,20 @@ class AddStoryPage {
         formElement.appendChild(successMessage);
     }
 
+    /**
+     * Set form submission handler
+     * @param {Function} handler - Submission handler
+     */
     setSubmitHandler(handler) {
         if (typeof handler === "function") {
             this._submitHandler = handler;
         }
     }
 
+    /**
+     * Set loading state during submission
+     * @param {boolean} isLoading - Whether form is submitting
+     */
     setLoading(isLoading) {
         this._isLoading = isLoading;
 

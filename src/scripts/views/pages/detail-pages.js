@@ -39,12 +39,12 @@ class DetailPage {
             return;
         }
 
-        this._map = this._mapHelper.initMap(mapContainer, {
+        const map = this._mapHelper.initMap(mapContainer, {
             center: [lat, lon],
             zoom: 15,
         });
 
-        const marker = L.marker([lat, lon]).addTo(this._map);
+        const marker = L.marker([lat, lon]).addTo(map);
         marker
             .bindPopup(
                 `
@@ -66,6 +66,10 @@ class DetailPage {
         }
     }
 
+    /**
+     * Set retry handler function
+     * @param {Function} handler - Retry handler function
+     */
     setRetryHandler(handler) {
         this._retryHandler = handler;
 

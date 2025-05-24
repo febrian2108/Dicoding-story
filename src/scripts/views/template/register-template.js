@@ -1,17 +1,18 @@
 const createRegisterTemplate = ({ error = null, isLoading = false }) => {
-    const errorComponent = error
-        ? `
+  const errorComponent = error
+    ? `
         <div class="auth-error">
+          <i class="fas fa-exclamation-circle"></i>
           <p>${error}</p>
         </div>
       `
-        : "";
+    : "";
 
-    const buttonContent = isLoading
-        ? 'Registering...'
-        : 'Register';
+  const buttonContent = isLoading
+    ? '<i class="fas fa-spinner fa-spin"></i> Registering...'
+    : '<i class="fas fa-user-plus"></i> Register';
 
-    return `
+  return `
       <section class="auth">
         <div class="auth-container">
           <h2 class="auth__title">Register</h2>
@@ -39,7 +40,7 @@ const createRegisterTemplate = ({ error = null, isLoading = false }) => {
                 id="email" 
                 name="email" 
                 class="form-input" 
-                placeholder="email@example.com" 
+                placeholder="your.email@example.com" 
                 required
                 ${isLoading ? "disabled" : ""}
               />
@@ -87,7 +88,8 @@ const createRegisterTemplate = ({ error = null, isLoading = false }) => {
           </form>
           
           <div class="auth-footer">
-            <p>Already have an account? <a href="#/login" class="auth-link">Login here</a></p>
+            <p>Already have an account?</p>
+            <a href="#/login" class="auth-link">Login here</a>
           </div>
         </div>
       </section>

@@ -5,6 +5,12 @@ class CameraHelper {
         this._canvasElement = null;
     }
 
+    /**
+     * Initialize camera and start streaming to video element
+     * @param {HTMLVideoElement} videoElement - Video element to display camera stream
+     * @param {Object} constraints - Media constraints (optional)
+     * @returns {Promise<MediaStream>} Media stream
+     */
     async initCamera(videoElement, constraints = {}) {
         if (!videoElement) {
             throw new Error("Video element is required");
@@ -51,6 +57,11 @@ class CameraHelper {
         }
     }
 
+    /**
+     * Take a photo from the current camera stream
+     * @param {HTMLCanvasElement} canvasElement - Canvas element to capture photo
+     * @returns {Blob} Photo as Blob
+     */
     takePhoto(canvasElement) {
         if (!canvasElement) {
             throw new Error("Canvas element is required");
@@ -73,6 +84,11 @@ class CameraHelper {
         return this._getBlobFromCanvas();
     }
 
+    /**
+     * Get captured photo as File object
+     * @param {string} filename - Name for the file
+     * @returns {File} Photo as File object
+     */
     getPhotoFile(filename = "photo.jpg") {
         if (!this._canvasElement) {
             throw new Error("No photo has been taken. Call takePhoto first.");
@@ -83,6 +99,10 @@ class CameraHelper {
         });
     }
 
+    /**
+     * Switch between front and back cameras
+     * @returns {Promise<MediaStream>} New media stream
+     */
     async switchCamera() {
         if (!this._videoElement) {
             throw new Error("Camera not initialized. Call initCamera first.");
@@ -106,6 +126,10 @@ class CameraHelper {
         return this.initCamera(this._videoElement, constraints);
     }
 
+    /**
+     * Check if device has camera support
+     * @returns {Promise<boolean>} True if camera is supported
+     */
     static async isCameraSupported() {
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
             return false;
@@ -123,6 +147,11 @@ class CameraHelper {
         }
     }
 
+    /**
+     * Convert canvas content to blob
+     * @returns {Promise<Blob>} Canvas content as blob
+     * @private
+     */
     _getBlobFromCanvas() {
         return new Promise((resolve) => {
             this._canvasElement.toBlob(

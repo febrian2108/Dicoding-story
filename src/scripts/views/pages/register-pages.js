@@ -37,6 +37,10 @@ class RegisterPage {
         }
     }
 
+    /**
+     * Validate form before submission
+     * @returns {boolean} Whether form is valid
+     */
     _validateForm() {
         const name = document.getElementById("name");
         const email = document.getElementById("email");
@@ -69,6 +73,11 @@ class RegisterPage {
         return true;
     }
 
+    /**
+     * Show form field error
+     * @param {HTMLElement} field - Form field
+     * @param {string} message - Error message
+     */
     _showFieldError(field, message) {
         field.classList.add("form-input--error");
 
@@ -93,10 +102,18 @@ class RegisterPage {
         );
     }
 
+    /**
+     * Set register handler function
+     * @param {Function} handler - Register handler function
+     */
     setRegisterHandler(handler) {
         this._registerHandler = handler;
     }
 
+    /**
+     * Set loading state
+     * @param {boolean} isLoading - Whether registration is in progress
+     */
     setLoading(isLoading) {
         this._isLoading = isLoading;
 
@@ -104,8 +121,8 @@ class RegisterPage {
         if (registerButton) {
             registerButton.disabled = isLoading;
             registerButton.innerHTML = isLoading
-                ? 'Registering...'
-                : 'Register';
+                ? '<i class="fas fa-spinner fa-spin"></i> Registering...'
+                : '<i class="fas fa-user-plus"></i> Register';
         }
 
         const formFields = this._container.querySelectorAll(".form-input");
@@ -134,7 +151,9 @@ class RegisterPage {
         formElement.appendChild(successMessage);
     }
 
-    cleanup() { }
+    cleanup() {
+        // Nothing to clean up
+    }
 }
 
 export default RegisterPage;

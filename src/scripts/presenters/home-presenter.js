@@ -1,7 +1,7 @@
 import HomePage from "../views/pages/home-pages.js";
 import storyRepository from "../data/story-repository.js";
 import authRepository from "../data/auth-repository.js";
-import { applyCustomAnimation } from "../utils/view.js";
+import { applyCustomAnimation } from "../utils/view-transition.js";
 import Swal from "sweetalert2";
 
 class HomePresenter {
@@ -32,6 +32,7 @@ class HomePresenter {
         try {
             this._isLoading = true;
             this._error = null;
+
             this._renderLoading();
 
             const isAuthenticated = authRepository.isAuthenticated();
@@ -42,11 +43,11 @@ class HomePresenter {
                 this._renderView();
 
                 Swal.fire({
-                    title: "Wellcome to Story Apps!",
-                    text: "Sign in to view and share stories in the community.",
+                    title: "Welcome to Dicoding Story!",
+                    text: "Log in to see and share stories from the Dicoding community.",
                     icon: "info",
                     confirmButtonColor: "#2563EB",
-                    confirmButtonText: "Login",
+                    confirmButtonText: "Log In",
                     showCancelButton: true,
                     cancelButtonText: "Maybe Later",
                 }).then((result) => {

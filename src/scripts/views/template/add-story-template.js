@@ -1,9 +1,9 @@
 const createAddStoryTemplate = ({ isLoading = false }) => {
-    const buttonContent = isLoading
-        ? 'Posting...'
-        : 'Post Story';
+  const buttonContent = isLoading
+    ? '<i class="fas fa-spinner fa-spin"></i> Posting...'
+    : '<i class="fas fa-paper-plane"></i> Post Story';
 
-    return `
+  return `
       <section class="add-story">
         <div class="add-story__header">
           <h2 class="add-story__title">Add New Story</h2>
@@ -41,7 +41,7 @@ const createAddStoryTemplate = ({ isLoading = false }) => {
                   class="button photo-capture__button"
                   ${isLoading ? "disabled" : ""}
                 >
-                  Open Camera
+                  <i class="fas fa-camera"></i> Open Camera
                 </button>
                 
                 <button 
@@ -50,7 +50,7 @@ const createAddStoryTemplate = ({ isLoading = false }) => {
                   class="button photo-capture__button" 
                   disabled
                 >
-                  Take Photo
+                  <i class="fas fa-camera-retro"></i> Take Photo
                 </button>
                 
                 <button 
@@ -59,7 +59,7 @@ const createAddStoryTemplate = ({ isLoading = false }) => {
                   class="button photo-capture__button" 
                   disabled
                 >
-                  Switch Camera
+                  <i class="fas fa-sync"></i> Switch Camera
                 </button>
                 
                 <button 
@@ -68,7 +68,7 @@ const createAddStoryTemplate = ({ isLoading = false }) => {
                   class="button photo-capture__button" 
                   disabled
                 >
-                  Reset
+                  <i class="fas fa-trash"></i> Reset
                 </button>
               </div>
               
@@ -98,7 +98,7 @@ const createAddStoryTemplate = ({ isLoading = false }) => {
                   class="button location-picker__button"
                   ${isLoading ? "disabled" : ""}
                 >
-                  Use My Location
+                  <i class="fas fa-map-marker-alt"></i> Use My Location
                 </button>
                 
                 <p class="location-picker__hint">
