@@ -33,7 +33,7 @@ class StoryConfig {
             return responseJson.listStory;
         } catch (error) {
             console.error('Error getting stories:', error);
-            throw new Error(error.message || 'Gagal mengambil daftar cerita');
+            throw new Error(error.message || 'Failed to fetch story list');
         }
     }
 
@@ -65,7 +65,7 @@ class StoryConfig {
             return responseJson.story;
         } catch (error) {
             console.error('Error getting story detail:', error);
-            throw new Error(error.message || 'Gagal mengambil detail cerita');
+            throw new Error(error.message || 'Failed to fetch story list');
         }
     }
 
@@ -107,7 +107,7 @@ class StoryConfig {
             return responseJson;
         } catch (error) {
             console.error('Error adding story:', error);
-            throw new Error(error.message || 'Gagal menambahkan cerita');
+            throw new Error(error.message || 'Failed to add story');
         }
     }
 }

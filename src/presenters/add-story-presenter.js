@@ -10,18 +10,18 @@ class AddStoryPresenter {
       this._view.showLoading();
       
       if (!description) {
-        throw new Error('Deskripsi cerita wajib diisi');
+        throw new Error('The story description is mandatory');
       }
       
       if (!photoBlob) {
-        throw new Error('Foto wajib diambil');
+        throw new Error('Photos must be taken');
       }
       
       console.log('Adding story with', lat && lon ? 'location' : 'no location');
       const response = await this._config.addStory(description, photoBlob, lat, lon);
       
       console.log('Story added successfully');
-      this._view.showAlert('Cerita berhasil dibagikan!', 'success');
+      this._view.showAlert('The story was successfully shared!', 'success');
       
       setTimeout(() => {
         window.location.href = '#/';

@@ -24,7 +24,7 @@ class AuthConfig {
             return responseJson.loginResult;
         } catch (error) {
             console.error('Login error:', error);
-            throw new Error(error.message || 'Gagal melakukan login');
+            throw new Error(error.message || 'Failed to log in');
         }
     }
 
@@ -49,7 +49,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Registration error:', error);
-            throw new Error(error.message || 'Gagal melakukan registrasi');
+            throw new Error(error.message || 'Failed to register');
         }
     }
 
@@ -79,7 +79,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Notification subscription error:', error);
-            throw new Error(error.message || 'Gagal berlangganan notifikasi');
+            throw new Error(error.message || 'Failed to subscribe');
         }
     }
 
@@ -109,7 +109,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Unsubscribe error:', error);
-            throw new Error(error.message || 'Gagal berhenti berlangganan notifikasi');
+            throw new Error(error.message || 'Failed to unsubscribe from notifications');
         }
     }
 }

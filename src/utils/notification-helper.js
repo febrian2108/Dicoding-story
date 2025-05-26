@@ -1,34 +1,34 @@
 class NotificationHelper {
     static async registerServiceWorker() {
         if (!('serviceWorker' in navigator)) {
-            console.log('Service Worker tidak didukung di browser ini');
+            console.log('Service Worker is not supported in this browser');
             return null;
         }
 
         try {
             const registration = await navigator.serviceWorker.register('./sw.js');
-            console.log('Service Worker berhasil didaftarkan', registration);
+            console.log('Service Worker successfully registered', registration);
             return registration;
         } catch (error) {
-            console.error('Registrasi Service Worker gagal:', error);
+            console.error('Service Worker Registration Failed:', error);
             return null;
         }
     }
 
     static async requestPermission() {
         if (!('Notification' in window)) {
-            console.log('Browser tidak mendukung notifikasi');
+            console.log('The browser does not support notifications');
             return false;
         }
 
         const result = await Notification.requestPermission();
         if (result === 'denied') {
-            console.log('Fitur notifikasi tidak diizinkan');
+            console.log('Notification features are not permitted');
             return false;
         }
 
         if (result === 'default') {
-            console.log('Pengguna menutup kotak dialog permintaan izin');
+            console.log('User closes the permission request dialog box');
             return false;
         }
 
@@ -46,7 +46,7 @@ class NotificationHelper {
 
             return responseJson.data.vapidPublicKey;
         } catch (error) {
-            console.error('Gagal mendapatkan VAPID public key:', error);
+            console.error('Failed to get VAPID public key:', error);
             return null;
         }
     }
@@ -55,7 +55,7 @@ class NotificationHelper {
         const vapidPublicKey = await this.getVapidPublicKey();
 
         if (!vapidPublicKey) {
-            console.error('VAPID public key tidak tersedia');
+            console.error('VAPID public key not available');
             return null;
         }
 
@@ -67,11 +67,11 @@ class NotificationHelper {
                 applicationServerKey: convertedVapidKey,
             });
 
-            console.log('Berhasil melakukan subscribe dengan endpoint:', subscription.endpoint);
+            console.log('Successfully subscribed with endpoint:', subscription.endpoint);
             await this._sendSubscriptionToServer(subscription);
             return subscription;
         } catch (error) {
-            console.error('Gagal melakukan subscribe:', error);
+            console.error('Failed to subscribe:', error);
             return null;
         }
     }
@@ -80,7 +80,7 @@ class NotificationHelper {
         const token = localStorage.getItem('token');
 
         if (!token) {
-            console.log('User perlu login untuk menerima notifikasi');
+            console.log('Users need to login to receive notifications.');
             return;
         }
 
@@ -102,9 +102,9 @@ class NotificationHelper {
                 throw new Error(responseJson.message);
             }
 
-            console.log('Subscription berhasil dikirim ke server:', responseJson);
+            console.log('Subscription successfully sent to server:', responseJson);
         } catch (error) {
-            console.error('Gagal mengirim subscription ke server:', error);
+            console.error('Failed to send subscription to server:', error);
         }
     }
 
@@ -126,7 +126,7 @@ class NotificationHelper {
 
     static showNotification(title, options) {
         if (!('Notification' in window)) {
-            console.log('Browser tidak mendukung notifikasi');
+            console.log('The browser does not support notifications');
             return;
         }
 
@@ -135,7 +135,7 @@ class NotificationHelper {
                 registration.showNotification(title, options);
             });
         } else {
-            console.log('Izin notifikasi tidak diberikan');
+            console.log('Notification permission not granted');
         }
     }
 }

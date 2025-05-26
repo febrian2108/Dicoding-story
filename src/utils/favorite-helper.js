@@ -1,5 +1,5 @@
 class FavoriteHelper {
-    static DB_NAME = 'dicostory-favorite-db';
+    static DB_NAME = 'db-storyapps-favorite';
     static DB_VERSION = 1;
     static STORE_NAME = 'favorites';
 
@@ -64,7 +64,7 @@ class FavoriteHelper {
             };
 
             request.onerror = () => {
-                reject(new Error('Gagal menghapus story dari favorit'));
+                reject(new Error('Failed to delete story from favorites'));
             };
         });
     }

@@ -1,25 +1,25 @@
 importScripts('https://storage.googleapis.com/workbox-cdn/releases/6.5.4/workbox-sw.js');
 
-const CACHE_NAME = 'dicostory-v1';
+const CACHE_NAME = 'db-StoryApps';
 const urlsToCache = [
     './',
     './index.html',
     './manifest.json',
-    './src/public/icons/icon-192x192.png',
-    './src/public/icons/icon-512x512.png',
-    './src/public/icons/badge-96x96.png',
+    './src/public/icons/favicon-192x192.png',
+    './src/public/icons/favicon-152x152.png',
+    './src/public/icons/favicon-96x96.png',
 ];
 
 if (workbox) {
-    console.log('Workbox berhasil dimuat');
+    console.log('Workbox loaded successfully');
 
     workbox.precaching.precacheAndRoute([
         { url: './', revision: '1' },
         { url: './index.html', revision: '1' },
         { url: './manifest.json', revision: '1' },
-        { url: './src/public/icons/icon-192x192.png', revision: '1' },
-        { url: './src/public/icons/icon-512x512.png', revision: '1' },
-        { url: './src/public/icons/badge-96x96.png', revision: '1' },
+        { url: './src/public/icons/favicon-192x192.png', revision: '1' },
+        { url: './src/public/icons/favicon-152x152.png', revision: '1' },
+        { url: './src/public/icons/favicon-96x96.png', revision: '1' },
     ]);
 
     workbox.routing.registerRoute(
@@ -88,7 +88,7 @@ if (workbox) {
     });
 
 } else {
-    console.log('Workbox gagal dimuat, menggunakan cache manual');
+    console.log('Workbox failed to load, using manual cache');
 
     self.addEventListener('install', (event) => {
         event.waitUntil(
@@ -113,22 +113,22 @@ self.addEventListener('push', (event) => {
     console.log('Service Worker: Push received');
 
     let notification = {
-        title: 'DicoStory',
+        title: 'StoryApps Update',
         options: {
-            body: 'Ada pembaruan baru di DicoStory!',
-            icon: './icons/icon-192x192.png',
-            badge: './icons/badge-96x96.png',
+            body: 'There is a new update in StoryApps!',
+            icon: './icons/favicon-192x192.png',
+            badge: './icons/favicon-96x96.png',
             vibrate: [100, 50, 100],
             data: { url: './' },
             actions: [
                 {
                     action: 'open',
-                    title: 'Buka App',
-                    icon: './icons/icon-192x192.png'
+                    title: 'Open App',
+                    icon: './icons/favicon-192x192.png'
                 },
                 {
                     action: 'close',
-                    title: 'Tutup',
+                    title: 'Close',
                 }
             ]
         }
@@ -191,7 +191,7 @@ self.addEventListener('activate', (event) => {
                 return Promise.all(
                     cacheNames
                         .filter((cacheName) => {
-                            return cacheName.startsWith('dicostory-') && cacheName !== CACHE_NAME;
+                            return cacheName.startsWith('StoryApps-') && cacheName !== CACHE_NAME;
                         })
                         .map((cacheName) => {
                             console.log('Deleting old cache:', cacheName);

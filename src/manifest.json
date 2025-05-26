@@ -46,21 +46,21 @@
     ],
     "shortcuts": [
         {
-            "name": "Tambah Cerita Baru",
-            "short_name": "Tambah Cerita",
-            "description": "Bagikan cerita menarik kamu",
+            "name": "Add New Story",
+            "short_name": "Add Story",
+            "description": "Share your interesting stories",
             "url": "./index.html#/add",
             "icons": [
                 {
-                    "src": "./src/public/icons/add-icon-96x96.png",
+                    "src": "./src/public/icons/favicon-96x96.png",
                     "sizes": "96x96"
                 }
             ]
         },
         {
-            "name": "Lihat Favorit",
+            "name": "View Favorites",
             "short_name": "Favorit",
-            "description": "Lihat cerita favorit kamu",
+            "description": "View your favorite stories",
             "url": "./index.html#/favorites",
             "icons": [
                 {
