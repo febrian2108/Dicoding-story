@@ -1,9 +1,9 @@
-import { StoryModel } from '../../config/api-config.js';
+import { StoryConfig } from '../../config/api-config.js';
 import { MapPresenter } from '../../presenters/map-presenter.js';
 
 class MapPage {
     constructor() {
-        this._model = new StoryModel();
+        this._model = new StoryConfig();
         this._presenter = null;
         this._map = null;
         this._markers = [];

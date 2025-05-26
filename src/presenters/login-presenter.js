@@ -1,8 +1,8 @@
 import { AuthHelper } from '../utils/auth-helper.js';
 
 class LoginPresenter {
-    constructor(model, view) {
-        this._model = model;
+    constructor(config, view) {
+        this._config = config;
         this._view = view;
     }
 
@@ -20,7 +20,7 @@ class LoginPresenter {
             }
 
             console.log('Login validation passed, calling API');
-            const loginResult = await this._model.login(email, password);
+            const loginResult = await this._config.login(email, password);
 
             console.log('Login successful, saving user data');
             AuthHelper.setUserData(loginResult);

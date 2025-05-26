@@ -1,6 +1,6 @@
 class RegisterPresenter {
-    constructor(model, view) {
-        this._model = model;
+    constructor(config, view) {
+        this._config = config;
         this._view = view;
     }
 
@@ -22,7 +22,7 @@ class RegisterPresenter {
             }
 
             console.log('Register validation passed, calling API');
-            await this._model.register(name, email, password);
+            await this._config.register(name, email, password);
 
             console.log('Registration successful');
             this._view.showAlert('Registrasi berhasil. Silakan login.', 'success');

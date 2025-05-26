@@ -1,6 +1,6 @@
 class AddStoryPresenter {
-  constructor(model, view) {
-    this._model = model;
+  constructor(config, view) {
+    this._config = config;
     this._view = view;
   }
 
@@ -18,7 +18,7 @@ class AddStoryPresenter {
       }
       
       console.log('Adding story with', lat && lon ? 'location' : 'no location');
-      const response = await this._model.addStory(description, photoBlob, lat, lon);
+      const response = await this._config.addStory(description, photoBlob, lat, lon);
       
       console.log('Story added successfully');
       this._view.showAlert('Cerita berhasil dibagikan!', 'success');

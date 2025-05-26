@@ -1,4 +1,4 @@
-class AuthModel {
+class AuthConfig {
     constructor() {
         this._baseUrl = 'https://story-api.dicoding.dev/v1';
     }
@@ -58,7 +58,7 @@ class AuthModel {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                throw new Error('Anda belum login');
+                throw new Error('You must login first');
             }
 
             const response = await fetch(`${this._baseUrl}/notifications/subscribe`, {
@@ -88,7 +88,7 @@ class AuthModel {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                throw new Error('Anda belum login');
+                throw new Error('You must login first');
             }
 
             const response = await fetch(`${this._baseUrl}/notifications/subscribe`, {
@@ -114,4 +114,4 @@ class AuthModel {
     }
 }
 
-export { AuthModel };
+export { AuthConfig };

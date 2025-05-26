@@ -1,142 +1,143 @@
-import createRegisterTemplate from "../template/register-template.js";
+import { AuthConfig } from '../../config/auth-config.js';
+import { RegisterPresenter } from '../../presenters/register-presenter.js';
 
 class RegisterPage {
-    constructor({ error = null, isLoading = false, container }) {
-        this._error = error;
-        this._isLoading = isLoading;
-        this._container = container;
-        this._registerHandler = null;
+    constructor() {
+        this._model = new AuthConfig();
+        this._presenter = null;
     }
 
-    render() {
-        this._container.innerHTML = createRegisterTemplate({
-            error: this._error,
-            isLoading: this._isLoading,
-        });
-
-        this._attachEventListeners();
+    async render() {
+        console.log('Rendering register page');
+        return `
+      <section class="register-page page-transition">
+        <div class="form-container">
+          <h2 class="form-title">Register</h2>
+          
+          <div id="alert-container"></div>
+          
+          <form id="register-form">
+            <div class="form-group">
+              <label for="name" class="form-label">Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                class="form-input" 
+                required
+                placeholder="Your name"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                class="form-input" 
+                required
+                placeholder="your.email@example.com"
+              >
+            </div>
+            
+            <div class="form-group">
+              <label for="password" class="form-label">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                name="password" 
+                class="form-input" 
+                required
+                placeholder="Min. 8 characters"
+                minlength="8"
+              >
+              <small>Password must be at least 8 characters</small>
+            </div>
+            
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                name="confirmPassword" 
+                class="form-input" 
+                required
+                placeholder="Confirm your password"
+                minlength="8"
+              >
+            </div>
+            
+            <button type="submit" class="btn btn-block">
+                Register
+            </button>
+          </form>
+          
+          <div class="form-footer">
+            <p>Sudah memiliki akun? <a href="#/login">Login here</a></p>
+          </div>
+        </div>
+      </section>
+    `;
     }
 
-    _attachEventListeners() {
-        const form = document.getElementById("registerForm");
+    async afterRender() {
+        console.log('Register page afterRender');
+        this._presenter = new RegisterPresenter(this._model, this);
 
-        if (form && !this._isLoading) {
-            form.addEventListener("submit", (e) => {
-                e.preventDefault();
-
-                if (this._validateForm()) {
-                    const name = document.getElementById("name").value.trim();
-                    const email = document.getElementById("email").value.trim();
-                    const password = document.getElementById("password").value;
-
-                    if (this._registerHandler) {
-                        this._registerHandler({ name, email, password });
-                    }
-                }
-            });
-        }
-    }
-
-    _validateForm() {
-        const name = document.getElementById("name");
-        const email = document.getElementById("email");
-        const password = document.getElementById("password");
-        const confirmPassword = document.getElementById("confirmPassword");
-
-        if (!name.value.trim()) {
-            this._showFieldError(name, "Please enter your name");
-            return false;
-        }
-
-        if (!email.validity.valid) {
-            this._showFieldError(email, "Please enter a valid email address");
-            return false;
-        }
-
-        if (password.value.length < 8) {
-            this._showFieldError(
-                password,
-                "Password must be at least 8 characters long"
-            );
-            return false;
-        }
-
-        if (password.value !== confirmPassword.value) {
-            this._showFieldError(confirmPassword, "Passwords do not match");
-            return false;
-        }
-
-        return true;
-    }
-
-    _showFieldError(field, message) {
-        field.classList.add("form-input--error");
-
-        let errorElement = field.nextElementSibling;
-        if (!errorElement || !errorElement.classList.contains("form-error")) {
-            errorElement = document.createElement("p");
-            errorElement.className = "form-error";
-            field.parentNode.insertBefore(errorElement, field.nextSibling);
-        }
-
-        errorElement.textContent = message;
-
-        field.addEventListener(
-            "input",
-            () => {
-                field.classList.remove("form-input--error");
-                if (errorElement && errorElement.parentNode) {
-                    errorElement.parentNode.removeChild(errorElement);
-                }
-            },
-            { once: true }
-        );
-    }
-
-    setRegisterHandler(handler) {
-        this._registerHandler = handler;
-    }
-
-    setLoading(isLoading) {
-        this._isLoading = isLoading;
-
-        const registerButton = document.getElementById("registerButton");
-        if (registerButton) {
-            registerButton.disabled = isLoading;
-            registerButton.innerHTML = isLoading
-                ? '<i class="fas fa-spinner fa-spin"></i> Registering...'
-                : '<i class="fas fa-user-plus"></i> Register';
-        }
-
-        const formFields = this._container.querySelectorAll(".form-input");
-        formFields.forEach((field) => {
-            field.disabled = isLoading;
-        });
-    }
-
-    showSuccessMessage() {
-        const formElement = document.getElementById("registerForm");
-
-        if (!formElement) {
+        const registerForm = document.getElementById('register-form');
+        if (!registerForm) {
+            console.error('Register form not found in DOM');
             return;
         }
 
-        const successMessage = document.createElement("div");
-        successMessage.className = "success-message";
-        successMessage.innerHTML = `
-      <i class="fas fa-check-circle"></i>
-      <p>Registration successful!</p>
-      <p>Redirecting to login page...</p>
-    `;
+        registerForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
 
-        formElement.innerHTML = "";
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
-        formElement.appendChild(successMessage);
+            await this._presenter.register(name, email, password, confirmPassword);
+        });
     }
 
-    cleanup() {
-        // Nothing to clean up
+    showLoading() {
+        const submitButton = document.querySelector('#register-form button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+            submitButton.disabled = true;
+        }
+    }
+
+    hideLoading() {
+        const submitButton = document.querySelector('#register-form button[type="submit"]');
+        if (submitButton) {
+            submitButton.innerHTML = '<i class="fas fa-user-plus"></i> Register';
+            submitButton.disabled = false;
+        }
+    }
+
+    showAlert(message, type = 'danger') {
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            alertContainer.innerHTML = `
+        <div class="alert alert-${type}">
+          ${message}
+        </div>
+      `;
+
+            alertContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
+
+    clearAlert() {
+        const alertContainer = document.getElementById('alert-container');
+        if (alertContainer) {
+            alertContainer.innerHTML = '';
+        }
     }
 }
 
-export default RegisterPage;
+export { RegisterPage };
