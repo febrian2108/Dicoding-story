@@ -1,6 +1,6 @@
 class NotFoundPage {
     constructor() {
-        this._title = 'Halaman Tidak Ditemukan - DicoStory';
+        this._title = 'Page Not Found - StoryApps';
     }
 
     async render() {
@@ -11,9 +11,9 @@ class NotFoundPage {
         <div class="not-found-container">
           <div class="not-found-content">
             <h1>404</h1>
-            <h2>Halaman Tidak Ditemukan</h2>
-            <p>Maaf, halaman yang Anda cari tidak tersedia atau mungkin telah dipindahkan.</p>
-            <a href="#/" class="btn btn-primary">Kembali ke Beranda</a>
+            <h2>Page Not Found</h2>
+            <p>Sorry, the page you are looking for is not available or may have been moved..</p>
+            <a href="#/" class="btn btn-primary">Back to Home</a>
           </div>
         </div>
       </section>

@@ -83,7 +83,7 @@ class AddStoryPage {
                     <span>Koordinat: <span id="location-text"></span></span>
                   </div>
                   <button type="button" id="clear-location" class="btn btn-sm btn-danger">
-                    <i class="fas fa-times"></i> Hapus Lokasi
+                    <i class="fas fa-times"></i> Delete Location
                   </button>
                 </div>
               </div>

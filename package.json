@@ -17,7 +17,7 @@
     "axios": "^1.9.0",
     "gh-pages": "^6.3.0",
     "leaflet": "^1.9.4",
-    "sweetalert2": "^11.21.1",
+    "sweetalert2": "^11.22.0",
     "web-push": "^3.6.7",
     "workbox-precaching": "^7.3.0",
     "workbox-window": "^7.3.0"
