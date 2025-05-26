@@ -1,8 +1,8 @@
 :root {
-  --primary-color: #4e67f0;
-  --primary-dark: #3b50c9;
-  --secondary-color: #6c7de8;
-  --accent-color: #4662e3;
+  --primary-color: #2563eb;
+  --primary-dark: #1e40af;
+  --secondary-color: #60a5fa;
+  --accent-color: #1e40af;
   --light-color: #f1faee;
   --dark-color: #212529;
   --success-color: #28a745;
@@ -84,6 +84,8 @@ header {
 .nav-list {
   display: flex;
   list-style: none;
+  align-items: end;
+  align-content: end;
 }
 
 .nav-item {

@@ -11,13 +11,13 @@ class AppShell {
       <header>
         <div class="header-container">
           <div class="brand">
-            <h1><a href="#/">DicoStory</a></h1>
+            <h1><a href="#/">StoryApps</a></h1>
           </div>
           <nav id="drawer" class="nav">
             <ul class="nav-list">
-              <li class="nav-item"><a href="#/"><i class="fas fa-home"></i> Beranda</a></li>
-              <li class="nav-item"><a href="#/add"><i class="fas fa-plus-circle"></i> Tambah Cerita</a></li>
-              <li class="nav-item"><a href="#/map"><i class="fas fa-map-marked-alt"></i> Peta Cerita</a></li>
+              <li class="nav-item"><a href="#/"><i class="fas fa-home"></i> Home</a></li>
+              <li class="nav-item"><a href="#/add"><i class="fas fa-plus-circle"></i> Add Story</a></li>
+              <li class="nav-item"><a href="#/map"><i class="fas fa-map-marked-alt"></i> Map</a></li>
               <li class="nav-item" id="login-menu"><a href="#/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
               <li class="nav-item" id="register-menu"><a href="#/register"><i class="fas fa-user-plus"></i> Register</a></li>
               <li class="nav-item" id="logout-menu"><a href="#/"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -33,7 +33,7 @@ class AppShell {
 
       <footer>
         <div class="footer-content">
-          <p>&copy; 2025 Fatlem DicoStory - Berbagi Cerita Dicoding</p>
+          <p>&copy; 2025 StoryApps</p>
         </div>
       </footer>
     `;

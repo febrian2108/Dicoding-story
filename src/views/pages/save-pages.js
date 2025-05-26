@@ -14,11 +14,10 @@ class FavoritesPage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Cerita Favorit</h2>
-              <p>Kumpulan cerita yang Anda tandai sebagai favorit</p>
+              <h2 class="coordinator-title">Saved favorite stories</h2>
             </div>
             <a href="#/" class="btn btn-secondary">
-              <i class="fas fa-arrow-left"></i> Kembali ke Beranda
+              <i class="fas fa-arrow-left"></i> Back to Home
             </a>
           </div>
           
@@ -123,7 +122,7 @@ class FavoritesPage {
             ${story.lat && story.lon ?
                     `<div class="story-info">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Lokasi tersedia</span>
+                <span>Location available</span>
               </div>` : ''
                 }
           </div>
@@ -166,8 +165,8 @@ class FavoritesPage {
                     // Tampilkan notifikasi penghapusan favorit
                     if ('Notification' in window && Notification.permission === 'granted') {
                         navigator.serviceWorker.ready.then((registration) => {
-                            registration.showNotification('DicoStory', {
-                                body: 'Cerita berhasil dihapus dari favorit',
+                            registration.showNotification('StoryApps', {
+                                body: 'Story successfully removed from favorites',
                                 icon: './src/public/icons/icon-192x192.png',
                                 badge: './src/public/icons/badge-96x96.png',
                                 vibrate: [100, 50, 100]
@@ -194,9 +193,9 @@ class FavoritesPage {
         errorContainer.innerHTML = `
       <div class="error-content">
         <i class="fas fa-exclamation-triangle fa-3x"></i>
-        <h3>Gagal memuat cerita favorit</h3>
+        <h3>Failed to load favorite story</h3>
         <p>${message}</p>
-        <button id="retry-button" class="btn">Coba Lagi</button>
+        <button id="retry-button" class="btn">Try Again</button>
       </div>
     `;
 
@@ -209,7 +208,7 @@ class FavoritesPage {
                     this.renderFavorites(favorites);
                 } catch (error) {
                     console.error('Error reloading favorites:', error);
-                    this.showError('Gagal memuat cerita favorit: ' + error.message);
+                    this.showError('Failed to load favorite story: ' + error.message);
                 }
             });
         }

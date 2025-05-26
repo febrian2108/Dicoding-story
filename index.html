@@ -24,6 +24,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./src/config/auth-config.js">
 </head>
 
 <body class="app-shell-container">
@@ -43,10 +44,10 @@
                         <a href="#/add"><i class="fas fa-plus-circle"></i> Add Story</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#/map"><i class="fas fa-map-marked-alt"></i> Peta Cerita</a>
+                        <a href="#/map"><i class="fas fa-map-marked-alt"></i> Map</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#/favorites"><i class="fas fa-bookmark"></i> Save</a>
+                        <a href="#/save"><i class="fas fa-bookmark"></i> Save</a>
                     </li>
                     <li class="nav-item" id="login-menu">
                         <a href="#/login"><i class="fas fa-sign-in-alt"></i> Login</a>
@@ -55,6 +56,12 @@
                         <a href="#/register"><i class="fas fa-user-plus"></i> Register</a>
                     </li>
                     <li class="nav-item" id="logout-menu">
+                        <script>
+                            <span class="app-nav__user">
+                                <i class="fas fa-user-circle"></i>
+                                <span>'${userData.name || "User"}'</span>
+                            </span>;
+                        </script>
                         <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </li>
                 </ul>
@@ -67,12 +74,14 @@
 
     <main id="main-content" class="app-shell-content" tabindex="-1">
         <div id="offline-indicator" class="offline-indicator">
-            <i class="fas fa-wifi"></i> You are offline. Some features may be limited.
+            <i class="fas fa-wifi"></i> You are offline. Some features may be
+            limited.
         </div>
 
         <div id="pwa-install-banner" class="pwa-install-banner">
             <p>
-                <i class="fas fa-mobile-alt"></i> Install StoryApps on your device for better experience
+                <i class="fas fa-mobile-alt"></i> Install StoryApps on your device for
+                better experience
             </p>
             <button id="install-pwa" class="btn">Pasang</button>
             <button id="close-banner" class="close-banner">&times;</button>

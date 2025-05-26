@@ -6,14 +6,14 @@ class FavoriteHelper {
     static async openDB() {
         return new Promise((resolve, reject) => {
             if (!('indexedDB' in window)) {
-                reject(new Error('Browser tidak mendukung IndexedDB'));
+                reject(new Error('Browser does not support IndexedDB'));
                 return;
             }
 
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
             request.onerror = () => {
-                reject(new Error('Gagal membuka database favorites'));
+                reject(new Error('Failed to open favorites database'));
             };
 
             request.onsuccess = () => {
@@ -25,7 +25,7 @@ class FavoriteHelper {
 
                 if (!db.objectStoreNames.contains(this.STORE_NAME)) {
                     db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
-                    console.log(`Object store ${this.STORE_NAME} berhasil dibuat`);
+                    console.log(`Object store ${this.STORE_NAME} created successfully`);
                 }
             };
         });
@@ -41,11 +41,11 @@ class FavoriteHelper {
 
             request.onsuccess = () => {
                 resolve(true);
-                console.log(`Story berhasil ditambahkan ke favorit`);
+                console.log(`Story successfully added to favorites`);
             };
 
             request.onerror = () => {
-                reject(new Error('Gagal menambahkan story ke favorit'));
+                reject(new Error('Failed to add story to favorites'));
             };
         });
     }
@@ -60,7 +60,7 @@ class FavoriteHelper {
 
             request.onsuccess = () => {
                 resolve(true);
-                console.log(`Story berhasil dihapus dari favorit`);
+                console.log(`Story successfully removed from favorites`);
             };
 
             request.onerror = () => {
@@ -82,7 +82,7 @@ class FavoriteHelper {
             };
 
             request.onerror = () => {
-                reject(new Error('Gagal mengambil daftar favorit'));
+                reject(new Error('Failed to fetch favorites list'));
             };
         });
     }
@@ -100,7 +100,7 @@ class FavoriteHelper {
             };
 
             request.onerror = () => {
-                reject(new Error('Gagal memeriksa status favorit'));
+                reject(new Error('Failed to check favorite status'));
             };
         });
     }

@@ -17,13 +17,12 @@ class MapPage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Peta Cerita</h2>
-              <p>Jelajahi cerita berdasarkan lokasi di seluruh dunia</p>
+              <h2 class="coordinator-title">Map Story</h2>
             </div>
             <div class="map-controls">
               <div class="map-info">
                 <span class="map-stats">
-                  <i class="fas fa-map-marker-alt"></i> <span id="stories-count">0</span> Cerita dengan Lokasi
+                  <i class="fas fa-map-marker-alt"></i> <span id="stories-count">0</span> Stories with Locations
                 </span>
               </div>
             </div>
@@ -52,7 +51,7 @@ class MapPage {
             this._initMap();
 
             this._presenter.getStoriesWithLocation();
-        }, 100);
+        }, 10);
     }
 
     _initMap() {
@@ -91,10 +90,7 @@ class MapPage {
 
             const baseMaps = {
                 "OpenStreetMap": osmLayer,
-                "CartoDB Light": cartoDBLayer,
-                "Stamen Terrain": stamenLayer,
                 "Satelit": satelliteLayer,
-                "Topografi": topoLayer
             };
 
             L.control.layers(baseMaps).addTo(this._map);
@@ -131,7 +127,7 @@ class MapPage {
 
             setTimeout(() => {
                 this._map.invalidateSize();
-            }, 100);
+            }, 10);
         } catch (error) {
             console.error('Error initializing map:', error);
         }
@@ -163,7 +159,7 @@ class MapPage {
         this._clearMarkers();
 
         if (stories.length === 0) {
-            this.showError('Tidak ada cerita dengan lokasi yang tersedia');
+            this.showError('There are no stories with available locations');
             return;
         }
 
@@ -188,7 +184,7 @@ class MapPage {
             <div class="map-popup">
               <img src="${story.photoUrl}" alt="${story.name}" width="100%">
               <h3>${story.name}</h3>
-              <p>${this._truncateText(story.description, 100)}</p>
+              <p>${this._truncateText(story.description, 10)}</p>
               <button class="btn view-details-btn" data-id="${story.id}">
                 <i class="fas fa-eye"></i> View Details
               </button>

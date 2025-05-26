@@ -144,7 +144,7 @@ class HomePage {
             ${story.lat && story.lon ? `
               <div class="story-info">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Lokasi tersedia</span>
+                <span>Location available</span>
               </div>` : ''}
           </div>
           <div class="story-actions">

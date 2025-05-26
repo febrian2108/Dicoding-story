@@ -21,9 +21,9 @@ class AddStoryPage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Tambah Cerita Baru</h2>
-              <p>Bagikan pengalaman dan cerita menarikmu dengan komunitas</p>
+              <h2 class="coordinator-title">Add New Story</h2>
             </div>
+            <a href="#/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Home</a>
           </div>
           
           <div class="form-container">
@@ -32,27 +32,27 @@ class AddStoryPage {
             <form id="add-story-form">
               <div class="form-group">
                 <label class="form-label">
-                  <i class="fas fa-camera"></i> Foto Cerita
+                  <i class="fas fa-camera"></i> Photo
                 </label>
                 <div class="camera-container">
                   <div class="camera-preview">
                     <video id="camera-stream" autoplay playsinline></video>
                     <canvas id="photo-canvas" class="hidden"></canvas>
-                    <img id="photo-preview" class="hidden" alt="Preview foto yang diambil">
+                    <img id="photo-preview" class="hidden" alt="Preview photo taken">
                   </div>
                   <div class="camera-buttons">
                     <button type="button" id="start-camera" class="btn">
-                      <i class="fas fa-camera"></i> Mulai Kamera
+                      <i class="fas fa-camera"></i> Start Camera
                     </button>
                     <button type="button" id="upload-photo" class="btn">
-                      <i class="fas fa-upload"></i> Upload Foto
+                      <i class="fas fa-upload"></i> Upload Photo
                     </button>
                     <input type="file" id="photo-upload" accept="image/*" class="hidden">
                     <button type="button" id="capture-photo" class="btn hidden" disabled>
-                      <i class="fas fa-camera-retro"></i> Ambil Foto
+                      <i class="fas fa-camera-retro"></i> Taken Photo
                     </button>
                     <button type="button" id="retake-photo" class="btn hidden">
-                      <i class="fas fa-redo"></i> Ambil Ulang
+                      <i class="fas fa-redo"></i> Take Again
                     </button>
                   </div>
                 </div>
@@ -60,22 +60,22 @@ class AddStoryPage {
               
               <div class="form-group">
                 <label for="description" class="form-label">
-                  <i class="fas fa-pen"></i> Deskripsi Cerita
+                  <i class="fas fa-pen"></i> Story Description
                 </label>
                 <textarea 
                   id="description" 
                   name="description" 
                   class="form-textarea" 
                   required
-                  placeholder="Ceritakan pengalamanmu..."
+                  placeholder="Share your story..."
                 ></textarea>
               </div>
               
               <div class="form-group">
                 <label class="form-label">
-                  <i class="fas fa-map-marker-alt"></i> Lokasi
+                  <i class="fas fa-map-marker-alt"></i> Location
                 </label>
-                <p class="form-help">Klik pada peta untuk menandai lokasi ceritamu</p>
+                <p class="form-help">Click on the map to mark the location of your story.</p>
                 <div id="storyMap" class="map-container"></div>
                 <div id="location-info" class="location-info hidden">
                   <div>
@@ -89,9 +89,8 @@ class AddStoryPage {
               </div>
               
               <div class="form-actions">
-                <a href="#/" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-success">
-                  <i class="fas fa-paper-plane"></i> Bagikan Cerita
+                  <i class="fas fa-paper-plane"></i> Post Story
                 </button>
               </div>
             </form>
@@ -381,7 +380,7 @@ class AddStoryPage {
         
         if (retakeButton) {
           retakeButton.classList.remove('hidden');
-          retakeButton.innerHTML = '<i class="fas fa-redo"></i> Ambil Ulang';
+          retakeButton.innerHTML = '<i class="fas fa-redo"></i> Taken Again';
         }
         if (captureButton) {
           captureButton.classList.add('hidden');
@@ -459,12 +458,12 @@ class AddStoryPage {
       const description = document.getElementById('description').value;
       
       if (!this._photoBlob) {
-        this.showAlert('Silakan ambil foto terlebih dahulu');
+        this.showAlert('Please take a photo first');
         return;
       }
       
       if (!description) {
-        this.showAlert('Silakan masukkan deskripsi cerita');
+        this.showAlert('Please enter a story description');
         return;
       }
       
@@ -478,7 +477,7 @@ class AddStoryPage {
   showLoading() {
     const submitButton = document.querySelector('#add-story-form button[type="submit"]');
     if (submitButton) {
-      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
       submitButton.disabled = true;
     }
   }
