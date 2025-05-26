@@ -1,85 +1,57 @@
 import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa'
+import { resolve } from 'path';
 
 export default defineConfig({
-  plugins: [
-    VitePWA({
-      strategies: "generateSW",
-      registerType: "autoUpdate",
-      filename: "sw.js",
-      manifestFilename: "manifest.webmanifest",
-      includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
-      manifest: {
-        name: "Story Apps",
-        short_name: "Story Apps",
-        description: "Share your stories with others",
-        theme_color: "#2563EB",
-        icons: [
-          {
-            src: "/src/public/favicon.png",
-            sizes: "192x192",
-            type: "image/png",
-          },
-          {
-            src: "/src/public/favicon.png",
-            sizes: "512x512",
-            type: "image/png",
-          },
-          {
-            src: "/src/public/favicon.png",
-            sizes: "512x512",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-          {
-            src: "/src/public/favicon.png",
-            sizes: "144x144",
-            type: "image/png",
-            purpose: "any maskable",
-          },
-        ],
+  root: '.',
+  publicDir: 'public',
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
       },
-      workbox: {
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*$/,
-            handler: "NetworkFirst",
-            options: {
-              cacheName: "api-cache",
-              expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24,
-              },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            urlPattern: /^https:\/\/unpkg\.com\/.*/i,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "libs-cache",
-            },
-          },
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: "StaleWhileRevalidate",
-            options: {
-              cacheName: "images-cache",
-            },
-          },
-        ],
-      },
-    }),
-  ],
-  server: {
-    port: 3000,
-    headers: {
-      "Service-Worker-Allowed": "/",
+    },
+    assetsDir: '',
+    copyPublicDir: true,
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, 'src'),
     },
   },
-  build: {
-    outDir: "dist",
-    emptyOutDir: true,
-    sourcemap: true,
+  server: {
+    open: '/',
+    headers: {
+      'Service-Worker-Allowed': '/',
+      'Cache-Control': 'no-cache'
+    }
   },
+  plugins: [
+    {
+      name: 'configure-server',
+      configureServer(server) {
+        server.middlewares.use('/sw.js', (req, res, next) => {
+          res.setHeader('Service-Worker-Allowed', '/');
+          res.setHeader('Content-Type', 'application/javascript');
+          next();
+        });
+
+        server.middlewares.use('/manifest.json', (req, res, next) => {
+          res.setHeader('Content-Type', 'application/manifest+json');
+          next();
+        });
+      }
+    },
+    {
+      name: 'copy-pwa-files',
+      writeBundle() {
+        console.log('✅ PWA files should be copied to dist folder');
+        console.log('📁 Make sure sw.js and manifest.json are in public/ folder');
+      }
+    }
+  ],
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+  }
 });
