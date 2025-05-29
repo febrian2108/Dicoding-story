@@ -9,6 +9,7 @@ lerna-debug.log*
 
 node_modules
 *.local
+123456789.zip
 
 project.zip
 # Editor directories and files

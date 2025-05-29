@@ -109,18 +109,17 @@ class NotificationHelper {
     }
 
     static _urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+        const padding = '='.repeat((4 - base64String.length % 4) % 4);
         const base64 = (base64String + padding)
-            .replace(/-/g, '+')
+            .replace(/\-/g, '+')
             .replace(/_/g, '/');
 
         const rawData = window.atob(base64);
         const outputArray = new Uint8Array(rawData.length);
 
-        for (let i = 0; i < rawData.length; i++) {
+        for (let i = 0; i < rawData.length; ++i) {
             outputArray[i] = rawData.charCodeAt(i);
         }
-
         return outputArray;
     }
 
@@ -138,6 +137,24 @@ class NotificationHelper {
             console.log('Notification permission not granted');
         }
     }
+}
+
+export async function requestNotificationPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+        throw new Error('Permission not granted for Notification');
+    }
+    return permission;
+}
+
+export async function subscribeUserToPush(swRegistration) {
+    const publicVapidKey = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk'; // Ganti dengan public key dari server-mu
+
+    const subscription = await swRegistration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+    });
+    return subscription;
 }
 
 export { NotificationHelper };

@@ -9,9 +9,10 @@
     <title>StoryApps</title>
     <link rel="icon" href="./src/public/note.png" type="image/x-icon" />
     <link rel="shortcut icon" href="./src/public/note.png" type="image/x-icon" />
-    <link rel="apple-touch-icon" sizes="180x180" href="./src/public/icons/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="./src/public/icons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="./src/public/icons/favicon-16x16.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <link rel="apple-touch-icon" href="./src/public/icons/favicon-192x192.png" />
+    <link rel="icon" href="./src/public/icons/favicon-96x96.png" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -58,6 +59,9 @@
                     <li class="nav-item" id="logout-menu">
                         <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
                     </li>
+                    <li class="nav-item" id="btn-install-pwa">
+                        <a href="#"> <i class="fas fa-download"></i> Install</a>
+                    </li>
                 </ul>
             </nav>
             <button id="menu" class="header-menu" aria-label="Toggle navigation menu">
@@ -66,23 +70,10 @@
         </div>
     </header>
 
-    <main id="main-content" class="app-shell-content" tabindex="-1">
-        <div id="offline-indicator" class="offline-indicator">
-            <i class="fas fa-wifi"></i> You are offline. Some features may be
-            limited.
-        </div>
-
-        <div id="pwa-install-banner" class="pwa-install-banner">
-            <p>
-                <i class="fas fa-mobile-alt"></i> Install StoryApps on your device for
-                better experience
-            </p>
-            <button id="install-pwa" class="btn">Install</button>
-            <button id="close-banner" class="close-banner">&times;</button>
-        </div>
-
-        <div id="content" class="content"></div>
-    </main>
+    <div id="pwa-install-banner" style="display:none;">
+        <span id="pwa-install-message">Install StoryApps untuk pengalaman terbaik</span>
+        <button id="btn-close-pwa-banner" type="button" aria-label="Close">×</button>
+    </div>
 
     <footer class="app-shell-footer">
         <div class="footer-content">

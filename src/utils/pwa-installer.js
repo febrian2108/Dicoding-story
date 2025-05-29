@@ -1,78 +1,60 @@
 class PwaInstaller {
-  static init() {
-    this.deferredPrompt = null;
-    this._setupEventListeners();
-  }
+  static deferredPrompt = null;
 
-  static _setupEventListeners() {
+  static init() {
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
-      
-      this.deferredPrompt = event;
+      PwaInstaller.deferredPrompt = event;
 
-      this._showInstallBanner();
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const installButton = document.getElementById('install-pwa');
-      const closeBannerButton = document.getElementById('close-banner');
-      
-      if (installButton) {
-        installButton.addEventListener('click', () => {
-          this._installPwa();
-        });
-      }
-      
-      if (closeBannerButton) {
-        closeBannerButton.addEventListener('click', () => {
-          this._hideInstallBanner();
-        });
+      // Tampilkan banner
+      const banner = document.getElementById('pwa-install-banner');
+      if (banner) {
+        banner.style.display = 'flex';
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      this._hideInstallBanner();
-      
-      this.deferredPrompt = null;
+      console.log('PWA installed!');
+      PwaInstaller._hideBanner();
+      PwaInstaller.deferredPrompt = null;
+    });
 
-      console.log('PWA was installed');
+    document.addEventListener('DOMContentLoaded', () => {
+      const installBtn = document.getElementById('btn-install-pwa');
+      const closeBtn = document.getElementById('btn-close-pwa-banner');
+
+      if (installBtn) {
+        installBtn.addEventListener('click', async () => {
+          if (!PwaInstaller.deferredPrompt) {
+            console.log('No deferred prompt available');
+            return;
+          }
+          PwaInstaller.deferredPrompt.prompt();
+
+          const choiceResult = await PwaInstaller.deferredPrompt.userChoice;
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User accepted the install prompt');
+          } else {
+            console.log('User dismissed the install prompt');
+          }
+          PwaInstaller.deferredPrompt = null;
+          PwaInstaller._hideBanner();
+        });
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          PwaInstaller._hideBanner();
+        });
+      }
     });
   }
 
-  static _showInstallBanner() {
+  static _hideBanner() {
     const banner = document.getElementById('pwa-install-banner');
-    
-    if (banner && this.deferredPrompt) {
-      banner.classList.add('show');
-    }
-  }
-
-  static _hideInstallBanner() {
-    const banner = document.getElementById('pwa-install-banner');
-    
     if (banner) {
-      banner.classList.remove('show');
+      banner.style.display = 'none';
     }
-  }
-
-  static async _installPwa() {
-    if (!this.deferredPrompt) {
-      return;
-    }
-    
-    this.deferredPrompt.prompt();
-
-    const choiceResult = await this.deferredPrompt.userChoice;
-    
-    this.deferredPrompt = null;
-    
-    if (choiceResult.outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
-    }
-    
-    this._hideInstallBanner();
   }
 }
 

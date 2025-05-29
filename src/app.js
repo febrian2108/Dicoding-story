@@ -2,7 +2,7 @@ import { routes } from './routes/routes.js';
 import { UrlParser } from './utils/url-parse.js';
 import { AuthHelper } from './utils/auth-helper.js';
 import { IdbHelper } from './utils/indexed-db.js';
-import { NotificationHelper } from './utils/notification-helper.js';
+import { NotificationHelper, requestNotificationPermission, subscribeUserToPush } from './utils/notification-helper.js';
 import { NetworkStatus } from './utils/network-status.js';
 import { PwaInstaller } from './utils/pwa-installer.js';
 
@@ -16,13 +16,12 @@ class App {
 
   async _initializeApp() {
     console.log('Initializing app...');
-    
-    // Initialize utils
+
     await this._initIndexedDB();
     await this._initServiceWorker();
     NetworkStatus.init();
     PwaInstaller.init();
-    
+
     this._initMobileNav();
     this._checkAuthStatus();
     this._handleRoute();
@@ -51,39 +50,37 @@ class App {
 
   async _initServiceWorker() {
     try {
-      console.log('Initializing Service Worker...');
-      
       if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.register('./sw.js', {
-          scope: './'
-        });
-        
-        console.log('Service Worker registered successfully:', registration);
-        
-        // Update service worker jika ada versi baru
+        const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+
         registration.addEventListener('updatefound', () => {
-          console.log('New service worker found, updating...');
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed') {
+              if (navigator.serviceWorker.controller) {
+                console.log('New content is available; please refresh.');
+              } else {
+                // Content cached for offline use
+                console.log('Content is cached for offline use.');
+              }
+            }
+          });
         });
-        
-        // Request notification permission if logged in
-        if (AuthHelper.isLoggedIn()) {
-          const permission = await NotificationHelper.requestPermission();
-          
-          if (permission && registration) {
-            await NotificationHelper.subscribePushNotification(registration);
-          }
-        }
-        
+
+        await navigator.serviceWorker.ready;
+        console.log('Service Worker ready.');
+
         return registration;
       } else {
-        console.warn('Service Worker not supported');
+        console.warn('Service Worker is not supported.');
         return null;
       }
     } catch (error) {
-      console.error('Error initializing service worker:', error);
+      console.error('Service Worker registration failed:', error);
       return null;
     }
   }
+
 
   async _initIndexedDB() {
     try {
@@ -97,12 +94,12 @@ class App {
   _initMobileNav() {
     const menuButton = document.getElementById('menu');
     const drawer = document.getElementById('drawer');
-    
+
     if (!menuButton || !drawer) {
       console.error('Menu button or drawer not found');
       return;
     }
-    
+
     menuButton.addEventListener('click', (event) => {
       event.stopPropagation();
       drawer.classList.toggle('open');
@@ -142,11 +139,11 @@ class App {
       loginMenuItem.classList.add('hidden');
       registerMenuItem.classList.add('hidden');
       logoutMenuItem.classList.remove('hidden');
-      
+
       if (favoritesMenuItem) favoritesMenuItem.classList.remove('hidden');
       if (addStoryMenuItem) addStoryMenuItem.classList.remove('hidden');
       if (mapMenuItem) mapMenuItem.classList.remove('hidden');
-      
+
       // Setelah login, coba subscribe ke push notification
       this._subscribeToPushNotification();
     } else {
@@ -154,7 +151,7 @@ class App {
       loginMenuItem.classList.remove('hidden');
       registerMenuItem.classList.remove('hidden');
       logoutMenuItem.classList.add('hidden');
-      
+
       if (favoritesMenuItem) favoritesMenuItem.classList.add('hidden');
       if (addStoryMenuItem) addStoryMenuItem.classList.add('hidden');
       if (mapMenuItem) mapMenuItem.classList.add('hidden');
@@ -171,7 +168,7 @@ class App {
       if ('serviceWorker' in navigator) {
         const registration = await navigator.serviceWorker.ready;
         const permission = await NotificationHelper.requestPermission();
-        
+
         if (permission && registration) {
           await NotificationHelper.subscribePushNotification(registration);
         }
@@ -183,9 +180,9 @@ class App {
 
   async _handleLogout() {
     this._cleanupCurrentPage();
-    
+
     AuthHelper.logout();
-    
+
     // Clear data from IndexedDB
     try {
       await IdbHelper.clearStories();
@@ -193,7 +190,7 @@ class App {
     } catch (error) {
       console.error('Error clearing stories from IndexedDB:', error);
     }
-    
+
     window.location.href = '#/';
     window.location.reload();
   }
@@ -208,19 +205,19 @@ class App {
 
   async _handleRoute() {
     console.log('Handling route...');
- 
+
     this._cleanupCurrentPage();
-    
+
     const urlParts = window.location.hash.slice(1).split('/');
     if (urlParts.length > 2 && urlParts[1] === 'detail') {
       window.selectedStoryId = urlParts[2];
       window.history.replaceState(null, null, '#/detail');
     }
-    
+
     const url = UrlParser.parseActiveUrlWithCombiner();
     console.log('Current URL:', url);
     let page;
-    
+
     // Check if route exists
     if (routes[url]) {
       page = routes[url];
@@ -229,9 +226,9 @@ class App {
       console.log('Route not found, redirecting to 404 page');
       page = routes['/404'];
     }
-    
+
     console.log('Page to render:', page);
-    
+
     try {
       if (url === '/login' || url === '/register') {
         if (AuthHelper.isLoggedIn()) {
@@ -248,12 +245,12 @@ class App {
       }
 
       const contentContainer = document.querySelector('#content');
-      
+
       if (!contentContainer) {
         console.error('Content container not found');
         return;
       }
-      
+
       contentContainer.innerHTML = '';
 
       this._currentPage = new page.view();
@@ -266,14 +263,36 @@ class App {
       console.log('afterRender completed');
 
       document.getElementById('main-content').focus();
-      
+
     } catch (error) {
       console.error('Error rendering page:', error);
     }
   }
 }
 
+async function initPushNotifications() {
+  try {
+    const permission = await requestNotificationPermission();
+    if (permission === 'granted') {
+      const registration = await navigator.serviceWorker.ready;
+      const subscription = await subscribeUserToPush(registration);
+
+      await fetch('/api/save-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(subscription),
+      });
+
+      console.log('User is subscribed to push notifications:', subscription);
+    }
+  } catch (error) {
+    console.error('Failed to subscribe the user: ', error);
+  }
+}
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded');
   new App();
+  PwaInstaller.init();
 });
+
+initPushNotifications();

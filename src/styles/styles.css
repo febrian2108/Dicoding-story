@@ -1190,3 +1190,11 @@ footer {
     height: 35px;
   }
 }
+
+#pwa-install-banner {
+  display: none; /* default hidden */
+}
+
+#pwa-install-banner.show {
+  display: flex !important;
+}
