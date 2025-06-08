@@ -15,9 +15,9 @@ class AppShell {
           </div>
           <nav id="drawer" class="nav">
             <ul class="nav-list">
-              <li class="nav-item"><a href="#/"><i class="fas fa-home"></i> Home</a></li>
-              <li class="nav-item"><a href="#/add"><i class="fas fa-plus-circle"></i> Add Story</a></li>
-              <li class="nav-item"><a href="#/map"><i class="fas fa-map-marked-alt"></i> Map</a></li>
+              <li class="nav-item"><a href="#/"><i class="fas fa-home"></i> Beranda</a></li>
+              <li class="nav-item"><a href="#/add"><i class="fas fa-plus-circle"></i> Tambah Cerita</a></li>
+              <li class="nav-item"><a href="#/map"><i class="fas fa-map-marked-alt"></i> Peta Cerita</a></li>
               <li class="nav-item" id="login-menu"><a href="#/login"><i class="fas fa-sign-in-alt"></i> Login</a></li>
               <li class="nav-item" id="register-menu"><a href="#/register"><i class="fas fa-user-plus"></i> Register</a></li>
               <li class="nav-item" id="logout-menu"><a href="#/"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
@@ -33,7 +33,7 @@ class AppShell {
 
       <footer>
         <div class="footer-content">
-          <p>&copy; 2025 StoryApps</p>
+          <p>&copy; 2025 StoryApps - Berbagi Cerita Dicoding</p>
         </div>
       </footer>
     `;
@@ -42,12 +42,12 @@ class AppShell {
   static _setupEventListeners() {
     const hamburgerButton = document.getElementById('menu');
     const drawer = document.getElementById('drawer');
-    
+
     hamburgerButton.addEventListener('click', (event) => {
       drawer.classList.toggle('open');
       event.stopPropagation();
     });
-    
+
     document.addEventListener('click', (event) => {
       if (drawer.classList.contains('open') && !drawer.contains(event.target) && event.target !== hamburgerButton) {
         drawer.classList.remove('open');

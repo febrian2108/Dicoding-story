@@ -12,11 +12,11 @@ class LoginPresenter {
             this._view.showLoading();
 
             if (!email || !password) {
-                throw new Error('Email and password must be filled in');
+                throw new Error('Email dan password harus diisi');
             }
 
             if (password.length < 8) {
-                throw new Error('Password must be at least 8 characters');
+                throw new Error('Password minimal 8 karakter');
             }
 
             console.log('Login validation passed, calling API');

@@ -24,7 +24,7 @@ class AuthConfig {
             return responseJson.loginResult;
         } catch (error) {
             console.error('Login error:', error);
-            throw new Error(error.message || 'Failed to log in');
+            throw new Error(error.message || 'Gagal melakukan login');
         }
     }
 
@@ -49,7 +49,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Registration error:', error);
-            throw new Error(error.message || 'Failed to register');
+            throw new Error(error.message || 'Gagal melakukan registrasi');
         }
     }
 
@@ -58,7 +58,7 @@ class AuthConfig {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                throw new Error('You must login first');
+                throw new Error('Anda belum login');
             }
 
             const response = await fetch(`${this._baseUrl}/notifications/subscribe`, {
@@ -79,7 +79,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Notification subscription error:', error);
-            throw new Error(error.message || 'Failed to subscribe');
+            throw new Error(error.message || 'Gagal berlangganan notifikasi');
         }
     }
 
@@ -88,7 +88,7 @@ class AuthConfig {
             const token = localStorage.getItem('token');
 
             if (!token) {
-                throw new Error('You must login first');
+                throw new Error('Anda belum login');
             }
 
             const response = await fetch(`${this._baseUrl}/notifications/subscribe`, {
@@ -109,7 +109,7 @@ class AuthConfig {
             return responseJson;
         } catch (error) {
             console.error('Unsubscribe error:', error);
-            throw new Error(error.message || 'Failed to unsubscribe from notifications');
+            throw new Error(error.message || 'Gagal berhenti berlangganan notifikasi');
         }
     }
 }

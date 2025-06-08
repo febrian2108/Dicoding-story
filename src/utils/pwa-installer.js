@@ -1,60 +1,73 @@
 class PwaInstaller {
-  static deferredPrompt = null;
-
   static init() {
+    this.deferredPrompt = null;
+    this._setupEventListeners();
+  }
+
+  static _setupEventListeners() {
     window.addEventListener('beforeinstallprompt', (event) => {
       event.preventDefault();
-      PwaInstaller.deferredPrompt = event;
+      this.deferredPrompt = event;
 
-      // Tampilkan banner
-      const banner = document.getElementById('pwa-install-banner');
-      if (banner) {
-        banner.style.display = 'flex';
+      this._showInstallBanner();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const installButton = document.getElementById('install-pwa');
+      const closeBannerButton = document.getElementById('close-banner');
+
+      if (installButton) {
+        installButton.addEventListener('click', function () {
+          window.location.href = 'https://storyapps.netlify.app';
+        });
+      }
+
+      if (closeBannerButton) {
+        closeBannerButton.addEventListener('click', () => {
+          this._hideInstallBanner();
+        });
       }
     });
 
     window.addEventListener('appinstalled', () => {
-      console.log('PWA installed!');
-      PwaInstaller._hideBanner();
-      PwaInstaller.deferredPrompt = null;
-    });
+      this._hideInstallBanner();
+      this.deferredPrompt = null;
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const installBtn = document.getElementById('btn-install-pwa');
-      const closeBtn = document.getElementById('btn-close-pwa-banner');
-
-      if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-          if (!PwaInstaller.deferredPrompt) {
-            console.log('No deferred prompt available');
-            return;
-          }
-          PwaInstaller.deferredPrompt.prompt();
-
-          const choiceResult = await PwaInstaller.deferredPrompt.userChoice;
-          if (choiceResult.outcome === 'accepted') {
-            console.log('User accepted the install prompt');
-          } else {
-            console.log('User dismissed the install prompt');
-          }
-          PwaInstaller.deferredPrompt = null;
-          PwaInstaller._hideBanner();
-        });
-      }
-
-      if (closeBtn) {
-        closeBtn.addEventListener('click', () => {
-          PwaInstaller._hideBanner();
-        });
-      }
+      console.log('PWA was installed');
     });
   }
 
-  static _hideBanner() {
+  static _showInstallBanner() {
+    const banner = document.getElementById('pwa-install-banner');
+    if (banner && this.deferredPrompt) {
+      banner.classList.add('show');
+    }
+  }
+
+  static _hideInstallBanner() {
     const banner = document.getElementById('pwa-install-banner');
     if (banner) {
-      banner.style.display = 'none';
+      banner.classList.remove('show');
     }
+  }
+
+  static async _installPwa() {
+    if (!this.deferredPrompt) {
+      return;
+    }
+
+    this.deferredPrompt.prompt();
+
+    const choiceResult = await this.deferredPrompt.userChoice;
+    this.deferredPrompt = null;
+
+    if (choiceResult.outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    } else {
+      console.log('User dismissed the install prompt');
+    }
+
+    this._hideInstallBanner();
   }
 }
 

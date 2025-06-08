@@ -2,13 +2,13 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   root: '.',
   publicDir: 'public',
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    sourcemap: true,
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'index.html'),
@@ -24,7 +24,6 @@ export default defineConfig({
   },
   server: {
     open: '/',
-    port: 3000,
     headers: {
       'Service-Worker-Allowed': '/',
       'Cache-Control': 'no-cache',
@@ -32,68 +31,53 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
-      strategies: 'generateSW',
       registerType: 'autoUpdate',
-      filename: 'sw.js', 
-      manifestFilename: 'manifest.webmanifest', 
-      includeAssets: ['favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
+      injectRegister: 'auto',
       manifest: {
-        name: 'Dicoding Story App',
-        short_name: 'Story App',
-        description: 'Share your stories around Dicoding',
-        theme_color: '#2563EB',
+        name: 'StoryApps',
+        short_name: 'StoryApps',
+        description: 'Aplikasi untuk berbagi cerita menarik dari komunitas Dicoding',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
         icons: [
           {
-            src: 'favicon.png',
+            src: '/icons/android-chrome-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'favicon.png',
+            src: '/icons/android-chrome-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-          },
-          {
-            src: 'favicon.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'any maskable',
           },
         ],
+        start_url: '.',
+        display: 'standalone',
       },
       workbox: {
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/story-api\.dicoding\.dev\/.*$/,
-            handler: 'NetworkFirst',
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
             options: {
-              cacheName: 'api-cache',
+              cacheName: 'images',
               expiration: {
-                maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24,
+                maxEntries: 20,
               },
-              networkTimeoutSeconds: 10,
-            },
-          },
-          {
-            urlPattern: /^https:\/\/unpkg\.com\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'libs-cache',
-            },
-          },
-          {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif)$/,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'images-cache',
             },
           },
         ],
       },
     }),
+    {
+      name: 'copy-pwa-files',
+      writeBundle() {
+        console.log('✅ PWA files should be copied to dist folder');
+        console.log('📁 Make sure sw.js and manifest.json are in public/ folder');
+      }
+    }
   ],
   define: {
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
-  },
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+  }
 });

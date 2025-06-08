@@ -1,31 +1,31 @@
 class NotFoundPage {
-    constructor() {
-        this._title = 'Page Not Found - StoryApps';
-    }
+  constructor() {
+    this._title = 'halaman tidak ditemukan - StoryApps';
+  }
 
-    async render() {
-        document.title = this._title;
+  async render() {
+    document.title = this._title;
 
-        return `
+    return `
       <section class="not-found-page page-transition">
         <div class="not-found-container">
           <div class="not-found-content">
             <h1>404</h1>
-            <h2>Page Not Found</h2>
-            <p>Sorry, the page you are looking for is not available or may have been moved..</p>
-            <a href="#/" class="btn btn-primary">Back to Home</a>
+            <h2>Halaman Tidak Ditemukan</h2>
+            <p>Maaf, halaman yang Anda cari tidak tersedia atau mungkin telah dipindahkan.</p>
+            <a href="#/" class="btn btn-primary">Kembali ke Beranda</a>
           </div>
         </div>
       </section>
     `;
-    }
+  }
 
-    async afterRender() {
-        const notFoundContent = document.querySelector('.not-found-content');
-        if (notFoundContent) {
-            notFoundContent.classList.add('animate-fade-in');
-        }
+  async afterRender() {
+    const notFoundContent = document.querySelector('.not-found-content');
+    if (notFoundContent) {
+      notFoundContent.classList.add('animate-fade-in');
     }
+  }
 }
 
 export { NotFoundPage };

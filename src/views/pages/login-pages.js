@@ -2,14 +2,14 @@ import { AuthConfig } from '../../config/auth-config.js';
 import { LoginPresenter } from '../../presenters/login-presenter.js';
 
 class LoginPage {
-    constructor() {
-        this._model = new AuthConfig();
-        this._presenter = null;
-    }
+  constructor() {
+    this._config = new AuthConfig();
+    this._presenter = null;
+  }
 
-    async render() {
-        console.log('Rendering login page');
-        return `
+  async render() {
+    console.log('Rendering login page');
+    return `
       <section class="login-page page-transition">
         <div class="form-container">
           <h2 class="form-title">Login</h2>
@@ -25,7 +25,7 @@ class LoginPage {
                 name="email" 
                 class="form-input" 
                 required
-                placeholder="your.email@example.com"
+                placeholder="Masukkan email Anda"
               >
             </div>
             
@@ -37,7 +37,7 @@ class LoginPage {
                 name="password" 
                 class="form-input" 
                 required
-                placeholder="Your password"
+                placeholder="Masukkan password"
                 minlength="8"
               >
             </div>
@@ -48,68 +48,68 @@ class LoginPage {
           </form>
           
           <div class="form-footer">
-            <p>Don't have an account? <a href="#/register">Register here</a></p>
+            <p>Belum memiliki akun? <a href="#/register">Daftar Sekarang</a></p>
           </div>
         </div>
       </section>
     `;
+  }
+
+  async afterRender() {
+    console.log('Login page afterRender');
+    this._presenter = new LoginPresenter(this._config, this);
+
+    const loginForm = document.getElementById('login-form');
+    if (!loginForm) {
+      console.error('Login form not found in DOM');
+      return;
     }
 
-    async afterRender() {
-        console.log('Login page afterRender');
-        this._presenter = new LoginPresenter(this._model, this);
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-        const loginForm = document.getElementById('login-form');
-        if (!loginForm) {
-            console.error('Login form not found in DOM');
-            return;
-        }
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-        loginForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+      await this._presenter.login(email, password);
+    });
+  }
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            await this._presenter.login(email, password);
-        });
+  showLoading() {
+    const submitButton = document.querySelector('#login-form button[type="submit"]');
+    if (submitButton) {
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      submitButton.disabled = true;
     }
+  }
 
-    showLoading() {
-        const submitButton = document.querySelector('#login-form button[type="submit"]');
-        if (submitButton) {
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-            submitButton.disabled = true;
-        }
+  hideLoading() {
+    const submitButton = document.querySelector('#login-form button[type="submit"]');
+    if (submitButton) {
+      submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
+      submitButton.disabled = false;
     }
+  }
 
-    hideLoading() {
-        const submitButton = document.querySelector('#login-form button[type="submit"]');
-        if (submitButton) {
-            submitButton.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login';
-            submitButton.disabled = false;
-        }
-    }
-
-    showAlert(message, type = 'danger') {
-        const alertContainer = document.getElementById('alert-container');
-        if (alertContainer) {
-            alertContainer.innerHTML = `
+  showAlert(message, type = 'danger') {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = `
         <div class="alert alert-${type}">
           ${message}
         </div>
       `;
 
-            alertContainer.scrollIntoView({ behavior: 'smooth' });
-        }
+      alertContainer.scrollIntoView({ behavior: 'smooth' });
     }
+  }
 
-    clearAlert() {
-        const alertContainer = document.getElementById('alert-container');
-        if (alertContainer) {
-            alertContainer.innerHTML = '';
-        }
+  clearAlert() {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = '';
     }
+  }
 }
 
 export { LoginPage };

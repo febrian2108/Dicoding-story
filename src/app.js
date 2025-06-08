@@ -2,7 +2,7 @@ import { routes } from './routes/routes.js';
 import { UrlParser } from './utils/url-parse.js';
 import { AuthHelper } from './utils/auth-helper.js';
 import { IdbHelper } from './utils/indexed-db.js';
-import { NotificationHelper, requestNotificationPermission, subscribeUserToPush } from './utils/notification-helper.js';
+import { NotificationHelper } from './utils/notification-helper.js';
 import { NetworkStatus } from './utils/network-status.js';
 import { PwaInstaller } from './utils/pwa-installer.js';
 
@@ -22,6 +22,8 @@ class App {
     NetworkStatus.init();
     PwaInstaller.init();
 
+    await this._subscribeToPushNotification();
+
     this._initMobileNav();
     this._checkAuthStatus();
     this._handleRoute();
@@ -35,7 +37,6 @@ class App {
       this._cleanupCurrentPage();
     });
 
-    // Setup view transitions if supported
     document.addEventListener('click', (event) => {
       if (event.target.tagName === 'A' && event.target.href.includes('#/')) {
         if (document.startViewTransition) {
@@ -50,37 +51,37 @@ class App {
 
   async _initServiceWorker() {
     try {
-      if ('serviceWorker' in navigator) {
-        const registration = await navigator.serviceWorker.register('./sw.js', { scope: './' });
+      console.log('Initializing Service Worker...');
 
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
-          newWorker.addEventListener('statechange', () => {
-            if (newWorker.state === 'installed') {
-              if (navigator.serviceWorker.controller) {
-                console.log('New content is available; please refresh.');
-              } else {
-                // Content cached for offline use
-                console.log('Content is cached for offline use.');
-              }
-            }
-          });
+      if ('serviceWorker' in navigator) {
+        const registration = await navigator.serviceWorker.register('./sw.js', {
+          scope: './'
         });
 
-        await navigator.serviceWorker.ready;
-        console.log('Service Worker ready.');
+        console.log('Service Worker registered successfully:', registration);
+
+        registration.addEventListener('updatefound', () => {
+          console.log('New service worker found, updating...');
+        });
+
+        if (AuthHelper.isLoggedIn()) {
+          const permission = await NotificationHelper.requestPermission();
+
+          if (permission && registration) {
+            await NotificationHelper.subscribePushNotification(registration);
+          }
+        }
 
         return registration;
       } else {
-        console.warn('Service Worker is not supported.');
+        console.warn('Service Worker not supported');
         return null;
       }
     } catch (error) {
-      console.error('Service Worker registration failed:', error);
+      console.error('Error initializing service worker:', error);
       return null;
     }
   }
-
 
   async _initIndexedDB() {
     try {
@@ -144,7 +145,6 @@ class App {
       if (addStoryMenuItem) addStoryMenuItem.classList.remove('hidden');
       if (mapMenuItem) mapMenuItem.classList.remove('hidden');
 
-      // Setelah login, coba subscribe ke push notification
       this._subscribeToPushNotification();
     } else {
       console.log('User is not logged in');
@@ -183,7 +183,6 @@ class App {
 
     AuthHelper.logout();
 
-    // Clear data from IndexedDB
     try {
       await IdbHelper.clearStories();
       console.log('Stories cleared from IndexedDB after logout');
@@ -218,11 +217,9 @@ class App {
     console.log('Current URL:', url);
     let page;
 
-    // Check if route exists
     if (routes[url]) {
       page = routes[url];
     } else {
-      // If not, use the NotFoundPage
       console.log('Route not found, redirecting to 404 page');
       page = routes['/404'];
     }
@@ -270,29 +267,7 @@ class App {
   }
 }
 
-async function initPushNotifications() {
-  try {
-    const permission = await requestNotificationPermission();
-    if (permission === 'granted') {
-      const registration = await navigator.serviceWorker.ready;
-      const subscription = await subscribeUserToPush(registration);
-
-      await fetch('/api/save-subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(subscription),
-      });
-
-      console.log('User is subscribed to push notifications:', subscription);
-    }
-  } catch (error) {
-    console.error('Failed to subscribe the user: ', error);
-  }
-}
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOM fully loaded');
   new App();
-  PwaInstaller.init();
 });
-
-initPushNotifications();

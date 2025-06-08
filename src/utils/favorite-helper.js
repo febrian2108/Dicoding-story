@@ -1,19 +1,19 @@
 class FavoriteHelper {
-    static DB_NAME = 'db-storyapps-favorite';
+    static DB_NAME = 'storyapps-favorite-db';
     static DB_VERSION = 1;
     static STORE_NAME = 'favorites';
 
     static async openDB() {
         return new Promise((resolve, reject) => {
             if (!('indexedDB' in window)) {
-                reject(new Error('Browser does not support IndexedDB'));
+                reject(new Error('Browser tidak mendukung IndexedDB'));
                 return;
             }
 
             const request = indexedDB.open(this.DB_NAME, this.DB_VERSION);
 
             request.onerror = () => {
-                reject(new Error('Failed to open favorites database'));
+                reject(new Error('Gagal membuka database favorites'));
             };
 
             request.onsuccess = () => {
@@ -25,7 +25,7 @@ class FavoriteHelper {
 
                 if (!db.objectStoreNames.contains(this.STORE_NAME)) {
                     db.createObjectStore(this.STORE_NAME, { keyPath: 'id' });
-                    console.log(`Object store ${this.STORE_NAME} created successfully`);
+                    console.log(`Object store ${this.STORE_NAME} berhasil dibuat`);
                 }
             };
         });
@@ -41,11 +41,11 @@ class FavoriteHelper {
 
             request.onsuccess = () => {
                 resolve(true);
-                console.log(`Story successfully added to favorites`);
+                console.log(`Story berhasil ditambahkan ke favorit`);
             };
 
             request.onerror = () => {
-                reject(new Error('Failed to add story to favorites'));
+                reject(new Error('Gagal menambahkan story ke favorit'));
             };
         });
     }
@@ -60,11 +60,11 @@ class FavoriteHelper {
 
             request.onsuccess = () => {
                 resolve(true);
-                console.log(`Story successfully removed from favorites`);
+                console.log(`Story berhasil dihapus dari favorit`);
             };
 
             request.onerror = () => {
-                reject(new Error('Failed to delete story from favorites'));
+                reject(new Error('Gagal menghapus story dari favorit'));
             };
         });
     }
@@ -82,7 +82,7 @@ class FavoriteHelper {
             };
 
             request.onerror = () => {
-                reject(new Error('Failed to fetch favorites list'));
+                reject(new Error('Gagal mengambil daftar favorit'));
             };
         });
     }
@@ -100,7 +100,7 @@ class FavoriteHelper {
             };
 
             request.onerror = () => {
-                reject(new Error('Failed to check favorite status'));
+                reject(new Error('Gagal memeriksa status favorit'));
             };
         });
     }

@@ -5,7 +5,7 @@ import { IdbHelper } from '../../utils/indexed-db.js';
 
 class HomePage {
   constructor() {
-    this._model = new StoryConfig();
+    this._config = new StoryConfig();
     this._presenter = null;
     this._showFavorites = false;
     this._title = 'StoryApps';
@@ -19,7 +19,8 @@ class HomePage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Recent Stories</h2>
+              <h2 class="coordinator-title">Cerita Terbaru</h2>
+              <p>Jelajahi dan bagikan cerita menarik dari komunitas Dicoding</p>
             </div>
           </div>
           <div id="stories-container" class="coordinator-grid">
@@ -32,7 +33,7 @@ class HomePage {
   }
 
   async afterRender() {
-    this._presenter = new HomePresenter(this._model, this);
+    this._presenter = new HomePresenter(this._config, this);
 
     const toggleFavoritesButton = document.getElementById('toggle-favorites');
     if (toggleFavoritesButton) {
@@ -126,7 +127,7 @@ class HomePage {
             alt="Cerita dari ${story.name}"
             class="story-image"
             loading="lazy"
-            onerror="this.src='./src/public/favicon.jpg';"
+            onerror="this.src='./src/public/fallback.jpg';"
           />
         </div>
         <div class="story-content">
@@ -144,7 +145,7 @@ class HomePage {
             ${story.lat && story.lon ? `
               <div class="story-info">
                 <i class="fas fa-map-marker-alt"></i>
-                <span>Location available</span>
+                <span>Lokasi tersedia</span>
               </div>` : ''}
           </div>
           <div class="story-actions">
@@ -203,9 +204,9 @@ class HomePage {
     errorContainer.innerHTML = `
       <div class="error-content">
         <i class="fas fa-exclamation-triangle fa-3x"></i>
-        <h3>Error</h3>
+        <h3>Gagal memuat cerita</h3>
         <p>${message}</p>
-        <button id="retry-button" class="btn">Refresh</button>
+        <button id="retry-button" class="btn">Coba Lagi</button>
       </div>
     `;
 

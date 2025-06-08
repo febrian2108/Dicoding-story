@@ -10,7 +10,7 @@ class StoryConfig {
             const token = AuthHelper.getToken();
 
             if (!token) {
-                throw new Error('You must login first');
+                throw new Error('Anda belum login');
             }
 
             console.log(`Fetching stories: page=${page}, size=${size}, location=${location}`);
@@ -33,7 +33,7 @@ class StoryConfig {
             return responseJson.listStory;
         } catch (error) {
             console.error('Error getting stories:', error);
-            throw new Error(error.message || 'Failed to fetch story list');
+            throw new Error(error.message || 'Gagal mengambil daftar cerita');
         }
     }
 
@@ -42,7 +42,7 @@ class StoryConfig {
             const token = AuthHelper.getToken();
 
             if (!token) {
-                throw new Error('You must login first');
+                throw new Error('Anda belum login');
             }
 
             console.log('Fetching story detail for ID:', id);
@@ -65,7 +65,7 @@ class StoryConfig {
             return responseJson.story;
         } catch (error) {
             console.error('Error getting story detail:', error);
-            throw new Error(error.message || 'Failed to fetch story list');
+            throw new Error(error.message || 'Gagal mengambil detail cerita');
         }
     }
 
@@ -107,7 +107,7 @@ class StoryConfig {
             return responseJson;
         } catch (error) {
             console.error('Error adding story:', error);
-            throw new Error(error.message || 'Failed to add story');
+            throw new Error(error.message || 'Gagal menambahkan cerita');
         }
     }
 }

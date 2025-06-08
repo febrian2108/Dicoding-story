@@ -1,34 +1,36 @@
 class NotificationHelper {
     static async registerServiceWorker() {
         if (!('serviceWorker' in navigator)) {
-            console.log('Service Worker is not supported in this browser');
+            console.log('Service Worker tidak didukung di browser ini');
             return null;
         }
 
         try {
-            const registration = await navigator.serviceWorker.register('./sw.js');
-            console.log('Service Worker successfully registered', registration);
+            const registration = await navigator.serviceWorker.register('./sw.js', {
+                scope: './',
+            });
+            console.log('Service Worker berhasil didaftarkan', registration);
             return registration;
         } catch (error) {
-            console.error('Service Worker Registration Failed:', error);
+            console.error('Registrasi Service Worker gagal:', error);
             return null;
         }
     }
 
     static async requestPermission() {
         if (!('Notification' in window)) {
-            console.log('The browser does not support notifications');
+            console.log('Browser tidak mendukung notifikasi');
             return false;
         }
 
         const result = await Notification.requestPermission();
         if (result === 'denied') {
-            console.log('Notification features are not permitted');
+            console.log('Fitur notifikasi tidak diizinkan');
             return false;
         }
 
         if (result === 'default') {
-            console.log('User closes the permission request dialog box');
+            console.log('Pengguna menutup kotak dialog permintaan izin');
             return false;
         }
 
@@ -36,29 +38,16 @@ class NotificationHelper {
     }
 
     static async getVapidPublicKey() {
-        try {
-            const response = await fetch('https://story-api.dicoding.dev/v1/stories/vapidPublicKey');
-            const responseJson = await response.json();
-
-            if (responseJson.error) {
-                throw new Error(responseJson.message);
-            }
-
-            return responseJson.data.vapidPublicKey;
-        } catch (error) {
-            console.error('Failed to get VAPID public key:', error);
-            return null;
-        }
+        return 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
     }
 
     static async subscribePushNotification(registration) {
-        const vapidPublicKey = await this.getVapidPublicKey();
-
-        if (!vapidPublicKey) {
-            console.error('VAPID public key not available');
-            return null;
+        if (!registration.active) {
+            console.error('Service Worker tidak aktif');
+            return;
         }
 
+        const vapidPublicKey = await this.getVapidPublicKey();
         const convertedVapidKey = this._urlBase64ToUint8Array(vapidPublicKey);
 
         try {
@@ -67,65 +56,38 @@ class NotificationHelper {
                 applicationServerKey: convertedVapidKey,
             });
 
-            console.log('Successfully subscribed with endpoint:', subscription.endpoint);
+            console.log('Berhasil melakukan subscribe dengan endpoint:', subscription.endpoint);
             await this._sendSubscriptionToServer(subscription);
             return subscription;
         } catch (error) {
-            console.error('Failed to subscribe:', error);
+            console.error('Gagal melakukan subscribe:', error);
             return null;
         }
     }
 
     static async _sendSubscriptionToServer(subscription) {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            console.log('Users need to login to receive notifications.');
-            return;
-        }
-
-        try {
-            const response = await fetch('https://story-api.dicoding.dev/v1/stories/pushNotificationSubscribe', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
-                },
-                body: JSON.stringify({
-                    subscription: subscription,
-                }),
-            });
-
-            const responseJson = await response.json();
-
-            if (responseJson.error) {
-                throw new Error(responseJson.message);
-            }
-
-            console.log('Subscription successfully sent to server:', responseJson);
-        } catch (error) {
-            console.error('Failed to send subscription to server:', error);
-        }
+        const token = JSON.parse(localStorage.getItem('userData')).token;
     }
 
     static _urlBase64ToUint8Array(base64String) {
-        const padding = '='.repeat((4 - base64String.length % 4) % 4);
+        const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
         const base64 = (base64String + padding)
-            .replace(/\-/g, '+')
+            .replace(/-/g, '+')
             .replace(/_/g, '/');
 
         const rawData = window.atob(base64);
         const outputArray = new Uint8Array(rawData.length);
 
-        for (let i = 0; i < rawData.length; ++i) {
+        for (let i = 0; i < rawData.length; i++) {
             outputArray[i] = rawData.charCodeAt(i);
         }
+
         return outputArray;
     }
 
     static showNotification(title, options) {
         if (!('Notification' in window)) {
-            console.log('The browser does not support notifications');
+            console.log('Browser tidak mendukung notifikasi');
             return;
         }
 
@@ -134,27 +96,10 @@ class NotificationHelper {
                 registration.showNotification(title, options);
             });
         } else {
-            console.log('Notification permission not granted');
+            console.log('Izin notifikasi tidak diberikan');
+            alert('Anda belum memberikan izin untuk menerima notifikasi.');
         }
     }
-}
-
-export async function requestNotificationPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-        throw new Error('Permission not granted for Notification');
-    }
-    return permission;
-}
-
-export async function subscribeUserToPush(swRegistration) {
-    const publicVapidKey = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk'; // Ganti dengan public key dari server-mu
-
-    const subscription = await swRegistration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-    });
-    return subscription;
 }
 
 export { NotificationHelper };

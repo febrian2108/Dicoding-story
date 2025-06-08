@@ -3,7 +3,7 @@ import { AddStoryPresenter } from '../../presenters/add-story-presenter.js';
 
 class AddStoryPage {
   constructor() {
-    this._model = new StoryConfig();
+    this._config = new StoryConfig();
     this._presenter = null;
     this._map = null;
     this._marker = null;
@@ -11,7 +11,7 @@ class AddStoryPage {
     this._photoBlob = null;
     this._selectedLocation = null;
     this._photoSource = null;
-    this._hashChangeHandler = null; 
+    this._hashChangeHandler = null;
   }
 
   async render() {
@@ -21,9 +21,9 @@ class AddStoryPage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Add New Story</h2>
+              <h2 class="coordinator-title">Tambah Cerita Baru</h2>
+              <p>Bagikan pengalaman dan cerita menarikmu dengan komunitas</p>
             </div>
-            <a href="#/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Home</a>
           </div>
           
           <div class="form-container">
@@ -32,27 +32,27 @@ class AddStoryPage {
             <form id="add-story-form">
               <div class="form-group">
                 <label class="form-label">
-                  <i class="fas fa-camera"></i> Photo
+                  <i class="fas fa-camera"></i> Foto Cerita
                 </label>
                 <div class="camera-container">
                   <div class="camera-preview">
                     <video id="camera-stream" autoplay playsinline></video>
                     <canvas id="photo-canvas" class="hidden"></canvas>
-                    <img id="photo-preview" class="hidden" alt="Preview photo taken">
+                    <img id="photo-preview" class="hidden" alt="Preview foto yang diambil">
                   </div>
                   <div class="camera-buttons">
                     <button type="button" id="start-camera" class="btn">
-                      <i class="fas fa-camera"></i> Start Camera
+                      <i class="fas fa-camera"></i> Mulai Kamera
                     </button>
                     <button type="button" id="upload-photo" class="btn">
-                      <i class="fas fa-upload"></i> Upload Photo
+                      <i class="fas fa-upload"></i> Upload Foto
                     </button>
                     <input type="file" id="photo-upload" accept="image/*" class="hidden">
                     <button type="button" id="capture-photo" class="btn hidden" disabled>
-                      <i class="fas fa-camera-retro"></i> Taken Photo
+                      <i class="fas fa-camera-retro"></i> Ambil Foto
                     </button>
                     <button type="button" id="retake-photo" class="btn hidden">
-                      <i class="fas fa-redo"></i> Take Again
+                      <i class="fas fa-redo"></i> Ambil Ulang
                     </button>
                   </div>
                 </div>
@@ -60,22 +60,22 @@ class AddStoryPage {
               
               <div class="form-group">
                 <label for="description" class="form-label">
-                  <i class="fas fa-pen"></i> Story Description
+                  <i class="fas fa-pen"></i> Deskripsi Cerita
                 </label>
                 <textarea 
                   id="description" 
                   name="description" 
                   class="form-textarea" 
                   required
-                  placeholder="Share your story..."
+                  placeholder="Ceritakan pengalamanmu..."
                 ></textarea>
               </div>
               
               <div class="form-group">
                 <label class="form-label">
-                  <i class="fas fa-map-marker-alt"></i> Location
+                  <i class="fas fa-map-marker-alt"></i> Lokasi
                 </label>
-                <p class="form-help">Click on the map to mark the location of your story.</p>
+                <p class="form-help">Klik pada peta untuk menandai lokasi ceritamu</p>
                 <div id="storyMap" class="map-container"></div>
                 <div id="location-info" class="location-info hidden">
                   <div>
@@ -83,14 +83,15 @@ class AddStoryPage {
                     <span>Koordinat: <span id="location-text"></span></span>
                   </div>
                   <button type="button" id="clear-location" class="btn btn-sm btn-danger">
-                    <i class="fas fa-times"></i> Delete Location
+                    <i class="fas fa-times"></i> Hapus Lokasi
                   </button>
                 </div>
               </div>
               
               <div class="form-actions">
+                <a href="#/" class="btn btn-secondary">Batal</a>
                 <button type="submit" class="btn btn-success">
-                  <i class="fas fa-paper-plane"></i> Post Story
+                  <i class="fas fa-paper-plane"></i> Bagikan Cerita
                 </button>
               </div>
             </form>
@@ -102,8 +103,8 @@ class AddStoryPage {
 
   async afterRender() {
     console.log('Add story page afterRender');
-    this._presenter = new AddStoryPresenter(this._model, this);
-    
+    this._presenter = new AddStoryPresenter(this._config, this);
+
     setTimeout(() => {
       this._initMap();
     }, 100);
@@ -119,7 +120,7 @@ class AddStoryPage {
       console.log('Hash changed, stopping camera if active');
       this._stopCameraStream();
     };
-    
+
     window.addEventListener('hashchange', this._hashChangeHandler);
     console.log('HashChange listener added for camera cleanup');
   }
@@ -133,12 +134,12 @@ class AddStoryPage {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         maxZoom: 19
       });
-      
+
       const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
         maxZoom: 19
       });
-      
+
       const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
         attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
         maxZoom: 17
@@ -149,7 +150,7 @@ class AddStoryPage {
         "Satelit": satelliteLayer,
         "Topografi": topoLayer
       };
- 
+
       L.control.layers(baseMaps).addTo(this._map);
 
       osmLayer.addTo(this._map);
@@ -157,7 +158,7 @@ class AddStoryPage {
       this._map.on('click', (e) => {
         this._handleMapClick(e.latlng);
       });
-   
+
       this._map.locate({ setView: true, maxZoom: 16 });
 
       this._map.on('locationfound', (e) => {
@@ -179,15 +180,15 @@ class AddStoryPage {
 
     this._marker = L.marker(latlng).addTo(this._map);
     this._marker.bindPopup('Lokasi cerita Anda').openPopup();
- 
+
     this._selectedLocation = { lat: latlng.lat, lon: latlng.lng };
 
     const locationInfo = document.getElementById('location-info');
     const locationText = document.getElementById('location-text');
-    
+
     if (locationInfo && locationText) {
       locationInfo.classList.remove('hidden');
-      locationText.textContent = 
+      locationText.textContent =
         `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
 
       const clearLocationButton = document.getElementById('clear-location');
@@ -204,7 +205,7 @@ class AddStoryPage {
       this._map.removeLayer(this._marker);
       this._marker = null;
     }
- 
+
     this._selectedLocation = null;
 
     const locationInfo = document.getElementById('location-info');
@@ -219,7 +220,7 @@ class AddStoryPage {
     const retakePhotoButton = document.getElementById('retake-photo');
     const uploadPhotoButton = document.getElementById('upload-photo');
     const photoUploadInput = document.getElementById('photo-upload');
-    
+
     if (!startCameraButton || !capturePhotoButton || !retakePhotoButton || !uploadPhotoButton || !photoUploadInput) {
       console.error('Camera buttons not found');
       return;
@@ -228,19 +229,19 @@ class AddStoryPage {
     startCameraButton.addEventListener('click', () => {
       this._startCamera();
     });
-   
+
     capturePhotoButton.addEventListener('click', () => {
       this._capturePhoto();
     });
-    
+
     retakePhotoButton.addEventListener('click', () => {
       this._retakePhoto();
     });
-    
+
     uploadPhotoButton.addEventListener('click', () => {
       photoUploadInput.click();
     });
-    
+
     photoUploadInput.addEventListener('change', (event) => {
       this._handlePhotoUpload(event);
     });
@@ -254,7 +255,7 @@ class AddStoryPage {
       this.showAlert('Silakan pilih file gambar');
       return;
     }
-    
+
     this._photoSource = 'upload';
 
     const reader = new FileReader();
@@ -264,7 +265,7 @@ class AddStoryPage {
         photoPreviewElement.src = e.target.result;
         photoPreviewElement.classList.remove('hidden');
       }
-  
+
       const videoElement = document.getElementById('camera-stream');
       if (videoElement) {
         videoElement.classList.add('hidden');
@@ -282,7 +283,7 @@ class AddStoryPage {
       const uploadButton = document.getElementById('upload-photo');
       const captureButton = document.getElementById('capture-photo');
       const retakeButton = document.getElementById('retake-photo');
-      
+
       if (startButton) startButton.classList.add('hidden');
       if (uploadButton) uploadButton.classList.add('hidden');
       if (captureButton) {
@@ -294,7 +295,7 @@ class AddStoryPage {
         retakeButton.innerHTML = '<i class="fas fa-redo"></i> Upload Ulang';
       }
     };
-    
+
     reader.readAsDataURL(file);
   }
 
@@ -310,21 +311,21 @@ class AddStoryPage {
       if (!videoElement) {
         throw new Error('Video element not found');
       }
-      
+
       videoElement.srcObject = this._cameraStream;
       videoElement.classList.remove('hidden');
-      
+
       const photoPreview = document.getElementById('photo-preview');
       if (photoPreview) {
         photoPreview.classList.add('hidden');
       }
-      
+
       const captureButton = document.getElementById('capture-photo');
       if (captureButton) {
         captureButton.disabled = false;
         captureButton.classList.remove('hidden');
       }
-      
+
       const startCameraButton = document.getElementById('start-camera');
       const uploadButton = document.getElementById('upload-photo');
       if (startCameraButton) {
@@ -333,7 +334,7 @@ class AddStoryPage {
       if (uploadButton) {
         uploadButton.classList.add('hidden');
       }
-      
+
       const retakeButton = document.getElementById('retake-photo');
       if (retakeButton) {
         retakeButton.classList.add('hidden');
@@ -350,37 +351,37 @@ class AddStoryPage {
       const videoElement = document.getElementById('camera-stream');
       const canvasElement = document.getElementById('photo-canvas');
       const photoPreviewElement = document.getElementById('photo-preview');
-      
+
       if (!videoElement || !canvasElement || !photoPreviewElement) {
         throw new Error('Required elements not found');
       }
-      
+
       canvasElement.width = videoElement.videoWidth;
       canvasElement.height = videoElement.videoHeight;
-      
+
       const context = canvasElement.getContext('2d');
       context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-      
+
       canvasElement.toBlob((blob) => {
         this._photoBlob = blob;
         this._photoSource = 'camera';
-        
+
         const imageUrl = URL.createObjectURL(blob);
         photoPreviewElement.src = imageUrl;
         photoPreviewElement.classList.remove('hidden');
-        
+
         videoElement.classList.add('hidden');
-        
+
         this._stopCameraStream();
-        
+
         const retakeButton = document.getElementById('retake-photo');
         const captureButton = document.getElementById('capture-photo');
         const startButton = document.getElementById('start-camera');
         const uploadButton = document.getElementById('upload-photo');
-        
+
         if (retakeButton) {
           retakeButton.classList.remove('hidden');
-          retakeButton.innerHTML = '<i class="fas fa-redo"></i> Taken Again';
+          retakeButton.innerHTML = '<i class="fas fa-redo"></i> Ambil Ulang';
         }
         if (captureButton) {
           captureButton.classList.add('hidden');
@@ -399,7 +400,7 @@ class AddStoryPage {
     console.log('Retaking photo');
     this._photoBlob = null;
     this._photoSource = null;
-    
+
     const startButton = document.getElementById('start-camera');
     const uploadButton = document.getElementById('upload-photo');
     if (startButton) {
@@ -408,28 +409,28 @@ class AddStoryPage {
     if (uploadButton) {
       uploadButton.classList.remove('hidden');
     }
-    
+
     const retakeButton = document.getElementById('retake-photo');
     if (retakeButton) {
       retakeButton.classList.add('hidden');
     }
-    
+
     const photoPreview = document.getElementById('photo-preview');
     if (photoPreview) {
       photoPreview.classList.add('hidden');
     }
-    
+
     const captureButton = document.getElementById('capture-photo');
     if (captureButton) {
       captureButton.classList.add('hidden');
       captureButton.disabled = true;
     }
-    
+
     const videoElement = document.getElementById('camera-stream');
     if (videoElement) {
       videoElement.classList.add('hidden');
     }
-    
+
     const photoUploadInput = document.getElementById('photo-upload');
     if (photoUploadInput) {
       photoUploadInput.value = '';
@@ -451,25 +452,25 @@ class AddStoryPage {
       console.error('Add story form not found');
       return;
     }
-    
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      
+
       const description = document.getElementById('description').value;
-      
+
       if (!this._photoBlob) {
-        this.showAlert('Please take a photo first');
+        this.showAlert('Silakan ambil foto terlebih dahulu');
         return;
       }
-      
+
       if (!description) {
-        this.showAlert('Please enter a story description');
+        this.showAlert('Silakan masukkan deskripsi cerita');
         return;
       }
-      
+
       const lat = this._selectedLocation ? this._selectedLocation.lat : null;
       const lon = this._selectedLocation ? this._selectedLocation.lon : null;
-      
+
       await this._presenter.addStory(description, this._photoBlob, lat, lon);
     });
   }
@@ -477,7 +478,7 @@ class AddStoryPage {
   showLoading() {
     const submitButton = document.querySelector('#add-story-form button[type="submit"]');
     if (submitButton) {
-      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
       submitButton.disabled = true;
     }
   }
@@ -496,14 +497,14 @@ class AddStoryPage {
       console.error('Alert container not found');
       return;
     }
-    
+
     alertContainer.innerHTML = `
       <div class="alert alert-${type}">
         <i class="fas fa-${type === 'danger' ? 'exclamation-triangle' : 'check-circle'}"></i>
         ${message}
       </div>
     `;
-    
+
     alertContainer.scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -516,17 +517,17 @@ class AddStoryPage {
 
   beforeUnload() {
     console.log('AddStoryPage beforeUnload called');
-    
+
     // Stop camera stream
     this._stopCameraStream();
-    
+
     // Remove hashchange listener
     if (this._hashChangeHandler) {
       window.removeEventListener('hashchange', this._hashChangeHandler);
       this._hashChangeHandler = null;
       console.log('HashChange listener removed');
     }
-    
+
     // Clean up map
     if (this._map) {
       this._map.remove();

@@ -3,7 +3,7 @@ import { MapPresenter } from '../../presenters/map-presenter.js';
 
 class MapPage {
     constructor() {
-        this._model = new StoryConfig();
+        this._config = new StoryConfig();
         this._presenter = null;
         this._map = null;
         this._markers = [];
@@ -17,12 +17,13 @@ class MapPage {
         <div class="coordinator-layout">
           <div class="coordinator-header">
             <div>
-              <h2 class="coordinator-title">Map Story</h2>
+              <h2 class="coordinator-title">Peta Cerita</h2>
+              <p>Jelajahi cerita berdasarkan lokasi di seluruh dunia</p>
             </div>
             <div class="map-controls">
               <div class="map-info">
                 <span class="map-stats">
-                  <i class="fas fa-map-marker-alt"></i> <span id="stories-count">0</span> Stories with Locations
+                  <i class="fas fa-map-marker-alt"></i> <span id="stories-count">0</span> Cerita dengan Lokasi
                 </span>
               </div>
             </div>
@@ -45,19 +46,19 @@ class MapPage {
 
     async afterRender() {
         console.log('Map page afterRender');
-        this._presenter = new MapPresenter(this._model, this);
+        this._presenter = new MapPresenter(this._config, this);
 
         setTimeout(() => {
             this._initMap();
 
             this._presenter.getStoriesWithLocation();
-        }, 10);
+        }, 100);
     }
 
     _initMap() {
         try {
             console.log('Initializing stories map');
-            this._map = L.map('stories-map-container').setView([-2.5489, 118.0149], 5); // Indonesia center
+            this._map = L.map('stories-map-container').setView([-2.5489, 118.0149], 5);
 
             const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -90,7 +91,10 @@ class MapPage {
 
             const baseMaps = {
                 "OpenStreetMap": osmLayer,
+                "CartoDB Light": cartoDBLayer,
+                "Stamen Terrain": stamenLayer,
                 "Satelit": satelliteLayer,
+                "Topografi": topoLayer
             };
 
             L.control.layers(baseMaps).addTo(this._map);
@@ -127,7 +131,7 @@ class MapPage {
 
             setTimeout(() => {
                 this._map.invalidateSize();
-            }, 10);
+            }, 100);
         } catch (error) {
             console.error('Error initializing map:', error);
         }
@@ -159,7 +163,7 @@ class MapPage {
         this._clearMarkers();
 
         if (stories.length === 0) {
-            this.showError('There are no stories with available locations');
+            this.showError('Tidak ada cerita dengan lokasi yang tersedia');
             return;
         }
 
@@ -184,7 +188,7 @@ class MapPage {
             <div class="map-popup">
               <img src="${story.photoUrl}" alt="${story.name}" width="100%">
               <h3>${story.name}</h3>
-              <p>${this._truncateText(story.description, 10)}</p>
+              <p>${this._truncateText(story.description, 100)}</p>
               <button class="btn view-details-btn" data-id="${story.id}">
                 <i class="fas fa-eye"></i> View Details
               </button>

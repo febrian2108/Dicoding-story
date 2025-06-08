@@ -2,30 +2,30 @@ import { AuthConfig } from '../../config/auth-config.js';
 import { RegisterPresenter } from '../../presenters/register-presenter.js';
 
 class RegisterPage {
-    constructor() {
-        this._model = new AuthConfig();
-        this._presenter = null;
-    }
+  constructor() {
+    this._config = new AuthConfig();
+    this._presenter = null;
+  }
 
-    async render() {
-        console.log('Rendering register page');
-        return `
+  async render() {
+    console.log('Rendering register page');
+    return `
       <section class="register-page page-transition">
         <div class="form-container">
-          <h2 class="form-title">Register</h2>
+          <h2 class="form-title">Daftar Akun Baru</h2>
           
           <div id="alert-container"></div>
           
           <form id="register-form">
             <div class="form-group">
-              <label for="name" class="form-label">Name</label>
+              <label for="name" class="form-label">Nama</label>
               <input 
                 type="text" 
                 id="name" 
                 name="name" 
                 class="form-input" 
                 required
-                placeholder="Your name"
+                placeholder="Masukkan nama Anda"
               >
             </div>
             
@@ -37,7 +37,7 @@ class RegisterPage {
                 name="email" 
                 class="form-input" 
                 required
-                placeholder="your.email@example.com"
+                placeholder="Masukkan email Anda"
               >
             </div>
             
@@ -49,95 +49,95 @@ class RegisterPage {
                 name="password" 
                 class="form-input" 
                 required
-                placeholder="Min. 8 characters"
+                placeholder="Masukkan password"
                 minlength="8"
               >
-              <small>Password must be at least 8 characters</small>
+              <small>Password minimal 8 karakter</small>
             </div>
             
             <div class="form-group">
-              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <label for="confirmPassword" class="form-label">Konfirmasi Password</label>
               <input 
                 type="password" 
                 id="confirmPassword" 
                 name="confirmPassword" 
                 class="form-input" 
                 required
-                placeholder="Confirm your password"
+                placeholder="Konfirmasi password Anda"
                 minlength="8"
               >
             </div>
             
             <button type="submit" class="btn btn-block">
-                Register
+              <i class="fas fa-user-plus"></i> Daftar
             </button>
           </form>
           
           <div class="form-footer">
-            <p>Sudah memiliki akun? <a href="#/login">Login here</a></p>
+            <p>Sudah memiliki akun? <a href="#/login">Login Sekarang</a></p>
           </div>
         </div>
       </section>
     `;
+  }
+
+  async afterRender() {
+    console.log('Register page afterRender');
+    this._presenter = new RegisterPresenter(this._config, this);
+
+    const registerForm = document.getElementById('register-form');
+    if (!registerForm) {
+      console.error('Register form not found in DOM');
+      return;
     }
 
-    async afterRender() {
-        console.log('Register page afterRender');
-        this._presenter = new RegisterPresenter(this._model, this);
+    registerForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
 
-        const registerForm = document.getElementById('register-form');
-        if (!registerForm) {
-            console.error('Register form not found in DOM');
-            return;
-        }
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
 
-        registerForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+      await this._presenter.register(name, email, password, confirmPassword);
+    });
+  }
 
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            await this._presenter.register(name, email, password, confirmPassword);
-        });
+  showLoading() {
+    const submitButton = document.querySelector('#register-form button[type="submit"]');
+    if (submitButton) {
+      submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+      submitButton.disabled = true;
     }
+  }
 
-    showLoading() {
-        const submitButton = document.querySelector('#register-form button[type="submit"]');
-        if (submitButton) {
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-            submitButton.disabled = true;
-        }
+  hideLoading() {
+    const submitButton = document.querySelector('#register-form button[type="submit"]');
+    if (submitButton) {
+      submitButton.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
+      submitButton.disabled = false;
     }
+  }
 
-    hideLoading() {
-        const submitButton = document.querySelector('#register-form button[type="submit"]');
-        if (submitButton) {
-            submitButton.innerHTML = '<i class="fas fa-user-plus"></i> Register';
-            submitButton.disabled = false;
-        }
-    }
-
-    showAlert(message, type = 'danger') {
-        const alertContainer = document.getElementById('alert-container');
-        if (alertContainer) {
-            alertContainer.innerHTML = `
+  showAlert(message, type = 'danger') {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = `
         <div class="alert alert-${type}">
           ${message}
         </div>
       `;
 
-            alertContainer.scrollIntoView({ behavior: 'smooth' });
-        }
+      alertContainer.scrollIntoView({ behavior: 'smooth' });
     }
+  }
 
-    clearAlert() {
-        const alertContainer = document.getElementById('alert-container');
-        if (alertContainer) {
-            alertContainer.innerHTML = '';
-        }
+  clearAlert() {
+    const alertContainer = document.getElementById('alert-container');
+    if (alertContainer) {
+      alertContainer.innerHTML = '';
     }
+  }
 }
 
 export { RegisterPage };
