@@ -66,7 +66,15 @@ class NotificationHelper {
     }
 
     static async _sendSubscriptionToServer(subscription) {
-        const token = JSON.parse(localStorage.getItem('userData')).token;
+        try {
+            const { AuthConfig } = await import('../config/auth-config.js');
+            const authConfig = new AuthConfig();
+            await authConfig.subscribeNotification(subscription);
+            console.log('Berhasil mengirim subscription ke server');
+        } catch (error) {
+            console.error('Gagal mengirim subscription ke server:', error);
+            throw error;
+        }
     }
 
     static _urlBase64ToUint8Array(base64String) {
