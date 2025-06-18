@@ -69,7 +69,16 @@ class NotificationHelper {
         try {
             const { AuthConfig } = await import('../config/auth-config.js');
             const authConfig = new AuthConfig();
-            await authConfig.subscribeNotification(subscription);
+            
+            const formattedSubscription = {
+                endpoint: subscription.endpoint,
+                keys: {
+                    p256dh: subscription.keys.p256dh,
+                    auth: subscription.keys.auth
+                }
+            };
+            
+            await authConfig.subscribeNotification(formattedSubscription);
             console.log('Berhasil mengirim subscription ke server');
         } catch (error) {
             console.error('Gagal mengirim subscription ke server:', error);
